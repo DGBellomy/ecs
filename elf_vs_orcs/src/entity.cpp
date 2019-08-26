@@ -1,28 +1,31 @@
+#include <stdio.h>
+#include <string.h>
 #include "entity.h"
 
-bool Entity::add(Component *component)
+bool Entity::add(Component component)
 {
-    if (component != nullptr)
+    if (componentDict.find(component.getName()) == componentDict.end())
     {
-        // do the stuff to add component
+        componentDict[component.getName()] = component;
+        return true;
     }
     return false;
 }
 
 bool Entity::remove(const char* componentName)
 {
-    if (strncmp(componentName, "") != 0)
+    if (componentDict.find(componentName) != componentDict.end())
     {
-        // do the stuff to remove component
+        componentDict.erase(componentName);
     }
     return false;
 }
 
 Component* Entity::get(const char* componentName)
 {
-    if (componentName != "")
+    if (componentDict.find(componentName) != componentDict.end())
     {
-        // do the stuff to get component
+        return &componentDict[componentName];
     }
     return nullptr;
 }
