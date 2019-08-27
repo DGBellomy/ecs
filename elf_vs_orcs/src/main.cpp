@@ -1,5 +1,5 @@
 #include "entity.h"
-#include "component.h"
+#include "PosComponent.h"
 
 // Find the ring
 
@@ -13,18 +13,35 @@ int main()
     return 0;
 }
 
-Entity* createPiece(Component** componentList)
+Entity* createElf()
 {
-    Entity* piece = new Entity();
-    return piece;
+    Entity* elf = new Entity();
+    elf->add(PosComponent());
+    return elf;
 }
 
-Entity* createBoard(Component** componentList)
+Entity* createOrc()
 {
-    return nullptr;
+    Entity* orc = new Entity();
+    orc->add(PosComponent());
+    return orc;
 }
 
-Entity* createGame(Component** componentList)
+Entity* createWall()
 {
-    return nullptr;
+    Entity* wall = new Entity();
+    wall->add(PosComponent());
+    return wall;
+}
+
+Entity* createBoard()
+{
+    Entity* board = new Entity();
+    return board;
+}
+
+Entity* createGame()
+{
+    Entity* game = new Entity();
+    return game;
 }

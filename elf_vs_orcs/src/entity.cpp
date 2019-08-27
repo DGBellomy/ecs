@@ -1,31 +1,32 @@
-#include <stdio.h>
-#include <string.h>
 #include "entity.h"
 
 bool Entity::add(Component component)
 {
-    if (componentDict.find(component.getName()) == componentDict.end())
+    EntityMap::iterator it = componentDict.find(component.getKey());
+    if (it == componentDict.end())
     {
-        componentDict[component.getName()] = component;
+        componentDict.insert(EntityPair(component.getKey(), component));
         return true;
     }
     return false;
 }
 
-bool Entity::remove(const char* componentName)
+bool Entity::remove(unsigned int componentKey)
 {
-    if (componentDict.find(componentName) != componentDict.end())
+    EntityMap::iterator it = componentDict.find(componentKey);
+    if (it != componentDict.end())
     {
-        componentDict.erase(componentName);
+        componentDict.erase(it);
     }
     return false;
 }
 
-Component* Entity::get(const char* componentName)
+Component* Entity::get(unsigned int componentKey)
 {
-    if (componentDict.find(componentName) != componentDict.end())
+    EntityMap::iterator it = componentDict.find(componentKey);
+    if (it != componentDict.end())
     {
-        return &componentDict[componentName];
+        return &it->second;
     }
     return nullptr;
 }

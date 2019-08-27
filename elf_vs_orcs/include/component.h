@@ -2,10 +2,13 @@
 #define COMPONENT_H
 
 class Component {
-    const char* name;
+protected:
+    unsigned int _key;
+
+    Component(unsigned int key):_key(key){};
 
 public:
-    const char* getName() { return this->name; };
+    unsigned int getKey() { return this->_key; };
 };
 
 #endif //COMPONENT_H

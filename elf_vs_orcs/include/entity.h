@@ -4,13 +4,16 @@
 #include <map>
 #include "component.h"
 
+#define EntityPair std::pair<unsigned int, Component>
+#define EntityMap std::map<unsigned int, Component>
+
 class Entity {
-    std::map<const char*, Component> componentDict;
+    EntityMap componentDict;
 
 public:
     bool add(Component component);
-    bool remove(const char* componentName);
-    Component* get(const char* componentName);
+    bool remove(unsigned int componentKey);
+    Component* get(unsigned int componentKey);
 };
 
 #endif //ENTITY_H
