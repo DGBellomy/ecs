@@ -1,60 +1,68 @@
-#include <iostream>
+#include <stdio.h>
 #include "Common.h"
-#include "Components.h"
-#include "ComponentList.h"
 
-
-void createMessageEntity()
+struct MessageComponent
 {
-    ComponentList<MessageComponent>* messages = ComponentList<MessageComponent>().instance();
+    UINT entityID;
+    USHORT length;
+    const char* message;
+};
 
-    MessageComponent msgComp1;
-    msgComp1.entity_id = 1;
-    msgComp1.active = true;
-    msgComp1.message = "test";
-    msgComp1.len = 0;
-    messages->add(msgComp1);
+struct DisplayComponent
+{
+    UINT entityID;
+    USHORT length;
+    const char* message;
+};
 
-    MessageComponent msgComp2;
-    msgComp2.entity_id = 2;
-    msgComp2.active = true;
-    msgComp2.message = "test";
-    msgComp2.len = 0;
-    messages->add(msgComp2);
+struct DisplayList
+{
+    USHORT active;
+    DisplayComponent* list;
+    std::map<UINT, USHORT> map;
+};
 
-    MessageComponent* msgList = messages->get();
+struct MessageList
+{
+    USHORT active;
+    MessageComponent* list;
+    std::map<UINT, USHORT> map;
+};
 
-    for (USHORT i = 0; i < messages->active(); ++i)
+//*********************************************************************************************************************
+
+MessageComponent& getComponent(MessageList& messages, UINT entityID)
+{
+    USHORT index = messages.map[entityID];
+    return messages.list[index];
+}
+
+DisplayComponent& getComponent(DisplayList& displays, UINT entityID)
+{
+    USHORT index = displays.map[entityID];
+    return displays.list[index];
+}
+
+//*********************************************************************************************************************
+
+void notifySystem(MessageList& messages, DisplayList& displays)
+{
+    for (USHORT i = 0; i < messages.active; ++i)
     {
-        printf("message %d: %d - %s\n", i, msgList[i].entity_id, msgList[i].message);
+        MessageComponent message = messages.list[i];
+        getComponent(displays, message.entityID).message = message.message;
     }
 }
 
-void createTestEntity()
+void displaySystem(DisplayList& displays)
 {
-    ComponentList<TestComponent>* tests = ComponentList<TestComponent>::instance();
-
-    TestComponent testComp1;
-    testComp1.entity_id = 3;
-    testComp1.active = true;
-    testComp1.message = "test";
-    testComp1.len = 0;
-    tests->add(testComp1);
-
-    TestComponent testComp2;
-    testComp2.entity_id = 4;
-    testComp2.active = true;
-    testComp2.message = "test";
-    testComp2.len = 0;
-    tests->add(testComp2);
-
-    TestComponent* testList = tests->get();
-
-    for (USHORT i = 0; i < tests->active(); ++i)
+    for (USHORT i = 0; i < displays.active; ++i)
     {
-        printf("test %d: %d - %s\n", i, testList[i].entity_id, testList[i].message);
+        printf("%s", displays.list[i].message);
     }
 }
+
+//*********************************************************************************************************************
 
 int main()
 {
@@ -62,9 +70,15 @@ int main()
     // add systems (connect components to the systems)
     // init engine (add systems to the engine)
 
-    createMessageEntity();
-    createTestEntity();
-    createMessageEntity();
+    // create message component
+    // create display component
+
+    // create notify system
+    // create display system
+
+    // while true:
+    //   notify_system (messages, displays)
+    //   display_system (messages, displays)
 
     return 0;
 }
