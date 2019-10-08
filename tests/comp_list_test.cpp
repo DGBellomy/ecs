@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <map>
 
-// ************************************Testing Component List*********************************************
 const int POSITION_COMPONENT = 1;
 
 struct PosComp {
@@ -55,40 +54,9 @@ void testAddComponent()
     printf("<%d,%d> is <x=5,y=5>", actualPosComp.x, actualPosComp.y);
 
 }
-// ************************************Testing Component List*********************************************
-
-// *************************************Testing Function List*********************************************
-typedef void (*sysFuncPtr)(int);
-
-void dothis(int x)
-{
-    printf("dothis: %d\n", x + 2);
-}
-
-void dothat(int x)
-{
-    printf("dothat: %d\n", x * 2);
-}
-
-void testFuncs()
-{
-    sysFuncPtr* funcs;
-    funcs = new sysFuncPtr[5];
-
-
-    funcs[0] = dothis;
-    funcs[1] = dothat;
-
-    for (int i = 0; i < 2; ++i)
-    {
-        funcs[i](2);
-    }
-}
-// *************************************Testing Function List*********************************************
 
 int main()
 {
-    // do something???
     testAddComponent();
 
     return 0;

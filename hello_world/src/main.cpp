@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "Common.h"
+#include "Engine.h"
 
 struct MessageComponent
 {

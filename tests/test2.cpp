@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <map>
+
 
 enum ComponentType {
     NUM,
