@@ -9,12 +9,14 @@ enum ComponentType {
 
 class Entity {
     int m_id;
+    static int Count;
 
 public:
-    static int Count;
-    //void addComponent(Component& component)
-    //{
-    //}
+    template <class T>
+    void addComponent(T& component)
+    {
+        // add component to store
+    }
 };
 
 int Entity::Count = 0;
@@ -27,6 +29,16 @@ public:
     {
     }
 };
+
+
+int createElf()
+{
+    elf = Entity();
+    elf.addComponent<PositionComponent>(PositionComponent(0,0,0))
+    elf.addComponent<VelocityComponent>(VelocityComponent(0,0,0))
+
+    return elf.id;
+}
 
 
 int main()
