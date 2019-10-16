@@ -1,4 +1,7 @@
 #include <stdio.h>
+#include <string>
+
+#include "utils.h"
 
 #define PI 3.1415
 
@@ -23,7 +26,7 @@ class STest : public Test {
 };
 
 
-int main()
+void compare_func_ptrs()
 {
     void* pv = 0;
     void (*pfn)() = 0;
@@ -34,6 +37,19 @@ int main()
     printf("pfn: %lu\n", sizeof(pfn));
     printf("pmv: %lu\n", sizeof(pmv));
     printf("pmf: %lu\n", sizeof(pmf));
+}
+
+void check_tolower()
+{
+    std::string name = "HERALD\n";
+    printf("name: %s", dgb::utils::tolower(name).c_str());
+    printf("name: %s", dgb::utils::tolower("HELLO\n").c_str());
+}
+
+int main()
+{
+    check_tolower();
 
     return 0;
 }
+

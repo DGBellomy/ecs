@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <map>
 #include <string>
+#include "ComponentStore.h"
+#include "utils.h"
 
 enum ComponentTypes {};
 
