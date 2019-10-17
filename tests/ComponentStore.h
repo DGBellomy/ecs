@@ -1,3 +1,9 @@
+/* Author: GarRaptor
+ * Description: ... TODO: add something here
+ * Uses:
+ *   ... TODO: add something here
+ */
+
 #pragma once
 
 #include <iostream>
@@ -17,6 +23,11 @@ class ComponentStore {
       m_ComponentsMap()
     {}
 
+    ComponentStore(const ComponentStore&) = delete;
+    ComponentStore(const ComponentStore&&) = delete;
+    ComponentStore& operator= (const ComponentStore&) = delete;
+    ComponentStore& operator= (const ComponentStore&&) = delete;
+
 public:
     static ComponentStore* getInstance()
     {
@@ -24,24 +35,14 @@ public:
         return instance;
     }
 
-    std::vector<std::string> getComponentNames()
-    {
-        std::vector<std::string> componentNames(m_ComponentsMap.size());
-        for (components_map::iterator it = m_ComponentsMap.begin(); it != m_ComponentsMap.end(); ++it)
-        {
-            componentNames.push_back(it->first);
-        }
-        return componentNames;
-    }
-
+public:
     template <typename T>
     void addComponent(const T& component)
     {
         component_vector* componentVector = _getComponents(component.name);
         if (!componentVector)
         {
-            component_vector newComponentVector;
-            m_ComponentsMap[component.name] = newComponentVector;
+            m_ComponentsMap[component.name];
             componentVector = _getComponents(component.name);
         }
 
@@ -60,16 +61,40 @@ public:
         return componentVector->get<T>();
     }
 
-private:
+    int size()
+    {
+        return m_ComponentsMap.size();
+    }
 
-    bool _isComponent(const std::string& name) const
+    template <typename T>
+    int size(const std::string& name)
+    {
+        // TODO: define this
+    }
+
+    void getComponentNames(std::string*& buffer, int size)
+    {
+        if (size < this->size())
+        {
+            return;
+        }
+
+        components_map::iterator it = m_ComponentsMap.begin();
+        for (int i = 0; it != m_ComponentsMap.end(); ++it, ++i)
+        {
+            buffer[i] = it->first;
+        }
+    }
+
+    bool isComponent(const std::string& name) const
     {
         return (m_ComponentsMap.find(name) != m_ComponentsMap.end());
     }
 
+private:
     component_vector* _getComponents(const std::string& name)
     {
-        if (_isComponent(name))
+        if (isComponent(name))
         {
             return &m_ComponentsMap[name];
         }

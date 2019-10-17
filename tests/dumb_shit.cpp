@@ -68,7 +68,16 @@ struct PositionComponent {
     int x;
     int y;
 };
-const std::string name = "position";
+const std::string PositionComponent::name = "position";
+
+struct VelocityComponent {
+    static const std::string name;
+    int entityID;
+    int x;
+    int y;
+    bool isMoving;
+};
+const std::string VelocityComponent::name = "velocity";
 
 void check_component_store()
 {
@@ -83,17 +92,38 @@ void check_component_store()
     pc.y = 33;
     cs->addComponent<PositionComponent>(pc);
 
-    // print component names
-    // print values
+    VelocityComponent vc;
+    vc.entityID = 0;
+    vc.x = 8;
+    vc.y = 1;
+    vc.isMoving = false;
+    cs->addComponent<VelocityComponent>(vc);
+    vc.entityID = 1;
+    vc.x = 6;
+    vc.y = 2;
+    vc.isMoving = true;
+    cs->addComponent<VelocityComponent>(vc);
+
     PositionComponent* ppc = cs->getComponents<PositionComponent>(PositionComponent::name);
     for (int i = 0; i < 2; i++)
     {
-        printf("position: {%d, %d, %d}", ppc[i].entityID, ppc[i].x, ppc[i].y);
+        printf("position: {%d, %d, %d}\n", ppc[i].entityID, ppc[i].x, ppc[i].y);
+        printf("position loc: %ld\n", reinterpret_cast<long>(&ppc[i]));
+    }
+
+    VelocityComponent* pvc = cs->getComponents<VelocityComponent>(VelocityComponent::name);
+    for (int i = 0; i < 2; i++)
+    {
+        printf("velocity: {%d, %d, %d, %d}\n", pvc[i].entityID, pvc[i].x, pvc[i].y, pvc[i].isMoving);
+        printf("velocity loc: %ld\n", reinterpret_cast<long>(&pvc[i]));
     }
 }
 
 int main()
 {
+    // compare_func_ptrs();
+    // check_tolower();
+    // check_component_vector();
     check_component_store();
 
     return 0;
