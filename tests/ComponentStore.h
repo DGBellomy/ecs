@@ -8,11 +8,14 @@
 #include "utils.h"
 #include "component_vector.h"
 
-typedef void* component_list;
-typedef std::map<std::string, component_list> component_list_map;
+typedef std::map<std::string, component_vector> components_map;
 
 class ComponentStore {
-    component_list_map m_ComponentListMap;
+    components_map m_ComponentsMap;
+
+    ComponentStore():
+      m_ComponentsMap()
+    {}
 
 public:
     static ComponentStore* getInstance()
@@ -23,8 +26,8 @@ public:
 
     std::vector<std::string> getComponentNames()
     {
-        std::vector<std::string> componentNames(m_ComponentListMap.size());
-        for (component_list_map::iterator it = m_ComponentListMap.begin(); it != m_ComponentListMap.end(); ++it)
+        std::vector<std::string> componentNames(m_ComponentsMap.size());
+        for (components_map::iterator it = m_ComponentsMap.begin(); it != m_ComponentsMap.end(); ++it)
         {
             componentNames.push_back(it->first);
         }
@@ -34,46 +37,41 @@ public:
     template <typename T>
     void addComponent(const T& component)
     {
-        component_list* componentList = _getComponentList(component.name);
-        if (!componentList)
+        component_vector* componentVector = _getComponents(component.name);
+        if (!componentVector)
         {
-            T* newcomponentList = new T[16];
-            m_ComponentListMap[component.name] = reinterpret_cast<void*>(newcomponentList);
-            componentList = _getComponentList(component.name);
+            component_vector newComponentVector;
+            m_ComponentsMap[component.name] = newComponentVector;
+            componentVector = _getComponents(component.name);
         }
 
-        // FIXME: change 0 to the next available position
-        T* castedComponentList = reinterpret_cast<T*>(*componentList);
-        castedComponentList[0] = component;
-        *componentList = reinterpret_cast<T*>(castedComponentList);
+        componentVector->push<T>(component);
     }
 
     template <typename T>
-    T* getComponentList(const std::string& name)
+    T* getComponents(const std::string& name)
     {
-        component_list* componentList = _getComponentList(name);
-        if (!componentList)
+        component_vector* componentVector = _getComponents(name);
+        if (!componentVector)
         {
             return nullptr;
         }
 
-        T* castedComponentList = reinterpret_cast<T*>(*componentList);
-        // FIXME: 16 is hard set and needs to be moved
-        return castedComponentList;
+        return componentVector->get<T>();
     }
 
 private:
 
-    bool _isComponentList(const std::string& name) const
+    bool _isComponent(const std::string& name) const
     {
-        return (m_ComponentListMap.find(name) != m_ComponentListMap.end());
+        return (m_ComponentsMap.find(name) != m_ComponentsMap.end());
     }
 
-    component_list* _getComponentList(const std::string& name)
+    component_vector* _getComponents(const std::string& name)
     {
-        if (_isComponentList(name))
+        if (_isComponent(name))
         {
-            return &m_ComponentListMap[name];
+            return &m_ComponentsMap[name];
         }
         return nullptr;
     }

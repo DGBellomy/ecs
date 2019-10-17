@@ -3,6 +3,7 @@
 
 #include "utils.h"
 #include "component_vector.h"
+#include "ComponentStore.h"
 
 #define PI 3.1415
 
@@ -47,10 +48,8 @@ void check_tolower()
     printf("name: %s", dgb::utils::tolower("HELLO\n").c_str());
 }
 
-int main()
+void check_component_vector()
 {
-    // check_tolower();
-
     component_vector comp;
     comp.push<int>(9);
     comp.push<int>(3);
@@ -61,6 +60,41 @@ int main()
     {
         printf("int: %d\n", list[i]);
     }
+}
+
+struct PositionComponent {
+    static const std::string name;
+    int entityID;
+    int x;
+    int y;
+};
+const std::string name = "position";
+
+void check_component_store()
+{
+    ComponentStore* cs = ComponentStore::getInstance();
+    PositionComponent pc;
+    pc.entityID = 0;
+    pc.x = 3;
+    pc.y = 7;
+    cs->addComponent<PositionComponent>(pc);
+    pc.entityID = 1;
+    pc.x = 9;
+    pc.y = 33;
+    cs->addComponent<PositionComponent>(pc);
+
+    // print component names
+    // print values
+    PositionComponent* ppc = cs->getComponents<PositionComponent>(PositionComponent::name);
+    for (int i = 0; i < 2; i++)
+    {
+        printf("position: {%d, %d, %d}", ppc[i].entityID, ppc[i].x, ppc[i].y);
+    }
+}
+
+int main()
+{
+    check_component_store();
 
     return 0;
 }
