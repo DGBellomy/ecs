@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "utils.h"
+#include "component_vector.h"
 
 typedef void* component_list;
 typedef std::map<std::string, component_list> component_list_map;

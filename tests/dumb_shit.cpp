@@ -2,6 +2,7 @@
 #include <string>
 
 #include "utils.h"
+#include "component_vector.h"
 
 #define PI 3.1415
 
@@ -48,7 +49,18 @@ void check_tolower()
 
 int main()
 {
-    check_tolower();
+    // check_tolower();
+
+    component_vector comp;
+    comp.push<int>(9);
+    comp.push<int>(3);
+    comp.push<int>(5);
+    int* list = comp.get<int>();
+
+    for (int i = 0; i < comp.size(); i++)
+    {
+        printf("int: %d\n", list[i]);
+    }
 
     return 0;
 }
