@@ -48,27 +48,15 @@ void check_tolower()
     printf("name: %s", dgb::utils::tolower("HELLO\n").c_str());
 }
 
-void check_component_vector()
-{
-    component_vector comp;
-    comp.push<int>(9);
-    comp.push<int>(3);
-    comp.push<int>(5);
-    int* list = comp.get<int>();
-
-    for (int i = 0; i < comp.size(); i++)
-    {
-        printf("int: %d\n", list[i]);
-    }
-}
-
-struct PositionComponent {
+struct Component {
     static const std::string name;
     int entityID;
+};
+
+struct PositionComponent : public Component {
     int x;
     int y;
 };
-const std::string PositionComponent::name = "position";
 
 struct VelocityComponent {
     static const std::string name;
@@ -78,6 +66,23 @@ struct VelocityComponent {
     bool isMoving;
 };
 const std::string VelocityComponent::name = "velocity";
+
+void check_component_vector()
+{
+    PositionComponent pc;
+    pc.entityID = 0;
+    pc.x = 3;
+    pc.y = 7;
+
+    component_vector comp;
+    comp.push<PositionComponent>(pc);
+    PositionComponent* componentList = comp.get<PositionComponent>();
+
+    for (int i = 0; i < comp.size(); i++)
+    {
+        printf("pc: {%d, %d, %d}\n", componentList[i].entityID, componentList[i].x, componentList[i].y);
+    }
+}
 
 void check_component_store()
 {
