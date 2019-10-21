@@ -1,17 +1,6 @@
 /* Author: GarRaptor
- * Description: holds a map of component_vector containers. Goal is to be able to define a component
+ * Description: holds a map of component_list containers. Goal is to be able to define a component
  *   and to store it in this structure for access by user-defined systems.
- * Uses:
- *   ComponentStore* cs = ComponentStore::getInstance(); // uses the singleton pattern
- *   cs->addComponent<T>(component); // if this is a new type will create a new component vector.
- *   cs->getComponentList<T>(name); // return a list of components of type T
- *   cs->rmComponentList<T>(name); // TODO
- *   cs->getComponent<T>(name, entityID); // return a component of type T for a particular entityID.
- *   cs->rmComponent<T>(name, entityID); // TODO
- *   cs->size<T>(name); // return the number of components in a component_vector
- *   cs->active<T>(name); // return the number of active components in a component_vector
- *   cs->isActive<T>(name, entityID); // return if the component is active with entityID
- *   cs->isComponent(name); // verify that component_vector name already exists
  */
 
 #pragma once
@@ -19,12 +8,11 @@
 #include <iostream>
 #include <map>
 #include <string>
-#include <vector>
 
 #include "utils.h"
-#include "component_vector.h"
+#include "component_list.h"
 
-typedef std::map<std::string, component_vector> components_map;
+typedef std::map<std::string, component_list> components_map;
 
 class ComponentStore {
     components_map componentsMap_;
@@ -46,93 +34,168 @@ public:
     }
 
 public:
-    template <typename T>
-    void addComponent(const T& component)
-    {
-        component_vector* componentVector = _getComponents(component.name);
-        if (!componentVector)
-        {
-            componentsMap_[component.name];
-            componentVector = _getComponents(component.name);
-        }
-
-        componentVector->append<T>(component);
-    }
+    bool addComponentList(const std::string& name);
 
     template <typename T>
-    T* getComponentList(const std::string& name)
-    {
-        component_vector* componentVector = _getComponents(name);
+    T* getComponentList(const std::string& name);
 
-        if (!componentVector)
-            return nullptr;
-
-        return componentVector->get<T>();
-    }
+    // TODO
+    // template <typename T>
+    // void rmComponentList<T>(const std::string& name);
 
     template <typename T>
-    T* getComponent(const std::string& name, int entityID)
-    {
-        component_vector* componentVector = _getComponents(name);
-
-        if (!componentVector)
-            return nullptr;
-
-        return componentVector->get<T>(entityID);
-    }
+    bool addComponent(const T& component);
 
     template <typename T>
-    int size(const std::string& name)
-    {
-        component_vector* componentVector = _getComponents(name);
+    T* getComponent(const std::string& name, int entityID);
 
-        if (!componentVector)
-            return -1;
+    // TODO
+    // template <typename T>
+    // void rmComponent<T>(const std::string& name, int entityID);
 
-        return componentVector->size();
-    }
+    // TODO
+    // template <typename T>
+    // void deactivateComponent<T>(const std::string& name, int entityID);
+
+    // TODO
+    // template <typename T>
+    // void activateComponent<T>(const std::string& name, int entityID);
+
+public: // accessor functions
 
     template <typename T>
-    int active(const std::string& name)
-    {
-        component_vector* componentVector = _getComponents(name);
+    int size(const std::string& name);
 
-        if (!componentVector)
-            return -1;
+    template <typename T>
+    int active(const std::string& name);
 
-        return componentVector->active();
-    }
-
-    bool isActive(const std::string& name, int entityID)
-    {
-        return componentsMap_[name].isActive(entityID);
-    }
+    bool isActive(const std::string& name, int entityID);
 
     // TODO: figure out if this has any usefulness???
-    /*void getComponentNames(std::string*& buffer, int size)
-    {
-        if (size < this->size())
-            return;
+    //void getComponentNames(std::string*& buffer, int size);
 
-        components_map::iterator it = componentsMap_.begin();
-        for (int i = 0; it != componentsMap_.end(); ++it, ++i)
-        {
-            buffer[i] = it->first;
-        }
-    }*/
+    bool isComponentList(const std::string& name) const;
 
-    bool isComponent(const std::string& name) const
-    {
-        return (componentsMap_.find(name) != componentsMap_.end());
-    }
-
-private:
-    component_vector* _getComponents(const std::string& name)
-    {
-        if (isComponent(name))
-        {
-            return &componentsMap_[name];
-        }
-        return nullptr;
-    }
+private: // helper functions
+    component_list* _getComponents(const std::string& name);
 };
+
+// PUBLIC
+
+bool ComponentStore::addComponentList(const std::string& name)
+{
+    if (isComponentList(name))
+        return false;
+
+    componentsMap_[name];
+    return true;
+}
+
+template <typename T>
+T* ComponentStore::getComponentList(const std::string& name)
+{
+    component_list* componentVector = _getComponents(name);
+
+    if (!componentVector)
+        return nullptr;
+
+    return componentVector->get<T>();
+}
+
+// TODO
+// template <typename T>
+// void ComponentStore::rmComponentList<T>(const std::string& name);
+
+template <typename T>
+bool ComponentStore::addComponent(const T& component)
+{
+    component_list* componentVector = _getComponents(component.name);
+
+    if (!componentVector)
+        return false;
+
+    componentVector->append<T>(component);
+    return true;
+}
+
+template <typename T>
+T* ComponentStore::getComponent(const std::string& name, int entityID)
+{
+    component_list* componentVector = _getComponents(name);
+
+    if (!componentVector)
+        return nullptr;
+
+    return componentVector->get<T>(entityID);
+}
+
+// TODO
+// template <typename T>
+// void rmComponent<T>(const std::string& name, int entityID);
+
+// TODO
+// template <typename T>
+// void deactivateComponent<T>(const std::string& name, int entityID);
+
+// TODO
+// template <typename T>
+// void activateComponent<T>(const std::string& name, int entityID);
+
+// PUBLIC - accessor functions
+
+template <typename T>
+int ComponentStore::size(const std::string& name)
+{
+    component_list* componentVector = _getComponents(name);
+
+    if (!componentVector)
+        return -1;
+
+    return componentVector->size();
+}
+
+template <typename T>
+int ComponentStore::active(const std::string& name)
+{
+    component_list* componentVector = _getComponents(name);
+
+    if (!componentVector)
+        return -1;
+
+    return componentVector->active();
+}
+
+bool ComponentStore::isActive(const std::string& name, int entityID)
+{
+    return componentsMap_[name].isActive(entityID);
+}
+
+// TODO: figure out if this has any usefulness???
+/*void ComponentStore::getComponentNames(std::string*& buffer, int size)
+{
+    if (size < this->size())
+        return;
+
+    components_map::iterator it = componentsMap_.begin();
+    for (int i = 0; it != componentsMap_.end(); ++it, ++i)
+    {
+        buffer[i] = it->first;
+    }
+}*/
+
+bool ComponentStore::isComponentList(const std::string& name) const
+{
+    return (componentsMap_.find(name) != componentsMap_.end());
+}
+
+
+// PRIVATE - helper functions
+
+component_list* ComponentStore::_getComponents(const std::string& name)
+{
+    if (isComponentList(name))
+    {
+        return &componentsMap_[name];
+    }
+    return nullptr;
+}

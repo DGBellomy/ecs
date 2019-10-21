@@ -2,7 +2,7 @@
 #include <string>
 
 #include "utils.h"
-#include "component_vector.h"
+#include "component_list.h"
 #include "ComponentStore.h"
 
 #define PI 3.1415
@@ -67,15 +67,15 @@ struct VelocityComponent {
 };
 const std::string VelocityComponent::name = "velocity";
 
-void check_component_vector()
+void check_component_list()
 {
     PositionComponent pc;
     pc.entityID = 0;
     pc.x = 3;
     pc.y = 7;
 
-    component_vector comp;
-    comp.push<PositionComponent>(pc);
+    component_list comp;
+    comp.append<PositionComponent>(pc);
     PositionComponent* componentList = comp.get<PositionComponent>();
 
     for (int i = 0; i < comp.size(); i++)
@@ -87,6 +87,8 @@ void check_component_vector()
 void check_component_store()
 {
     ComponentStore* cs = ComponentStore::getInstance();
+
+    cs->addComponentList(PositionComponent::name);
     PositionComponent pc;
     pc.entityID = 0;
     pc.x = 3;
@@ -97,6 +99,7 @@ void check_component_store()
     pc.y = 33;
     cs->addComponent<PositionComponent>(pc);
 
+    cs->addComponentList(VelocityComponent::name);
     VelocityComponent vc;
     vc.entityID = 0;
     vc.x = 8;
@@ -109,14 +112,14 @@ void check_component_store()
     vc.isMoving = true;
     cs->addComponent<VelocityComponent>(vc);
 
-    PositionComponent* ppc = cs->getComponents<PositionComponent>(PositionComponent::name);
+    PositionComponent* ppc = cs->getComponentList<PositionComponent>(PositionComponent::name);
     for (int i = 0; i < 2; i++)
     {
         printf("position: {%d, %d, %d}\n", ppc[i].entityID, ppc[i].x, ppc[i].y);
         printf("position loc: %ld\n", reinterpret_cast<long>(&ppc[i]));
     }
 
-    VelocityComponent* pvc = cs->getComponents<VelocityComponent>(VelocityComponent::name);
+    VelocityComponent* pvc = cs->getComponentList<VelocityComponent>(VelocityComponent::name);
     for (int i = 0; i < 2; i++)
     {
         printf("velocity: {%d, %d, %d, %d}\n", pvc[i].entityID, pvc[i].x, pvc[i].y, pvc[i].isMoving);
@@ -128,7 +131,7 @@ int main()
 {
     // compare_func_ptrs();
     // check_tolower();
-    // check_component_vector();
+    // check_component_list();
     check_component_store();
 
     return 0;
