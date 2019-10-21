@@ -21,7 +21,8 @@ class component_list {
     component_list& operator= (const component_list&) = delete;
     component_list& operator= (const component_list&&) = delete;
 
-public:
+public: // Constructors
+
     component_list(int capacity=_DEFAULT_COMPONENT_VECTOR_SIZE):
       componentList_(nullptr),
       active_(0),
@@ -30,7 +31,8 @@ public:
       entityToIndex_()
     {}
 
-public:
+public: // modifying functions
+
     template <typename T>
     void append(const T& component);
 
@@ -50,7 +52,7 @@ public:
     T* get(int entityID);
 
 
-public:
+public: // accessor functions
 
     int size();
 
@@ -61,7 +63,8 @@ public:
     bool isActive(int entityID);
 
 
-private:
+private: // helper functions
+
     template <typename T>
     void _init();
 
@@ -78,7 +81,7 @@ private:
 };
 
 
-// PUBLIC
+// PUBLIC MODIFYING FUNCTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 template <typename T>
 void component_list::append(const T& component)
@@ -173,7 +176,7 @@ T* component_list::get(int entityID)
     return &componentList[entityToIndex_[entityID]];
 }
 
-// PUBLIC ACCESSOR FUNCTIONS
+// PUBLIC ACCESSOR FUNCTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 int component_list::size()
 {
@@ -200,7 +203,7 @@ bool component_list::isActive(int entityID)
     return index < active_;
 }
 
-// PRIVATE
+// PRIVATE HELPER FUNCTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 template <typename T>
 void component_list::_init()

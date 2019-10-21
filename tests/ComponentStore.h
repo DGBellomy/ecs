@@ -26,14 +26,16 @@ class ComponentStore {
     ComponentStore& operator= (const ComponentStore&) = delete;
     ComponentStore& operator= (const ComponentStore&&) = delete;
 
-public:
+public: // constructors
+
     static ComponentStore* getInstance()
     {
         static ComponentStore* instance = new ComponentStore();
         return instance;
     }
 
-public:
+public: // modifying functions
+
     bool addComponentList(const std::string& name);
 
     template <typename T>
@@ -77,10 +79,12 @@ public: // accessor functions
     bool isComponentList(const std::string& name) const;
 
 private: // helper functions
+
     component_list* _getComponents(const std::string& name);
 };
 
-// PUBLIC
+
+// PUBLIC MODIFYING FUNCTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 bool ComponentStore::addComponentList(const std::string& name)
 {
@@ -141,7 +145,7 @@ T* ComponentStore::getComponent(const std::string& name, int entityID)
 // template <typename T>
 // void activateComponent<T>(const std::string& name, int entityID);
 
-// PUBLIC - accessor functions
+// PUBLIC ACCESSOR FUNCTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 template <typename T>
 int ComponentStore::size(const std::string& name)
@@ -189,7 +193,7 @@ bool ComponentStore::isComponentList(const std::string& name) const
 }
 
 
-// PRIVATE - helper functions
+// PRIVATE HELPER FUNCTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 component_list* ComponentStore::_getComponents(const std::string& name)
 {
