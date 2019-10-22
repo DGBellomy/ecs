@@ -21,7 +21,7 @@ class component_list {
     component_list& operator= (const component_list&) = delete;
     component_list& operator= (const component_list&&) = delete;
 
-public: // Constructors
+public:
 
     component_list(int capacity=_DEFAULT_COMPONENT_VECTOR_SIZE):
       componentList_(nullptr),
@@ -33,51 +33,28 @@ public: // Constructors
 
 public: // modifying functions
 
-    template <typename T>
-    void append(const T& component);
-
-    template <typename T>
-    void remove(int entityID);
-
-    template <typename T>
-    void activate(int entityID);
-
-    template <typename T>
-    void deactivate(int entityID);
-
-    template <typename T>
-    T* get();
-
-    template <typename T>
-    T* get(int entityID);
-
+    template <typename T> void append(const T& component);
+    template <typename T> void remove(int entityID);
+    template <typename T> void destroy();
+    template <typename T> void activate(int entityID);
+    template <typename T> void deactivate(int entityID);
+    template <typename T> T* get();
+    template <typename T> T* get(int entityID);
 
 public: // accessor functions
 
-    int size();
-
-    int active();
-
-    int inactive();
-
-    bool isActive(int entityID);
-
+    int size() const;
+    int active() const;
+    int inactive() const;
+    bool isActive(int entityID) const;
 
 private: // helper functions
 
-    template <typename T>
-    void _init();
-
-    template <typename T>
-    void _resize();
-
-    template <typename T>
-    void _swapWithActive(int index);
-
-    inline
-    bool _isFull();
-
-    bool _hasEntity(int entityID);
+    template <typename T> void _init();
+    template <typename T> void _resize();
+    template <typename T> void _swapWithActive(int entityID, bool activating);
+    inline bool _isFull() const;
+    bool _hasEntity(int entityID) const;
 };
 
 
@@ -103,9 +80,6 @@ void component_list::append(const T& component)
 template <typename T>
 void component_list::remove(int entityID)
 {
-    if (!componentList_)
-        return;
-
     if (!_hasEntity(entityID))
         return;
 
@@ -125,39 +99,31 @@ void component_list::remove(int entityID)
 }
 
 template <typename T>
-void component_list::activate(int entityID)
+void component_list::destroy()
 {
     if (!componentList_)
         return;
 
-    if (!_hasEntity(entityID))
-        return;
+    T* componentList = reinterpret_cast<T*>(componentList_);
+    delete[] componentList;
 
-    int index = entityToIndex_[entityID];
-    
-    if (index < active_)
-        return;
+    componentList_ = nullptr;
+    active_ = 0;
+    size_ = 0;
+    capacity_ = 0;
+    entityToIndex_.clear();
+}
 
-    _swapWithActive<T>(index);
-    ++active_;
+template <typename T>
+void component_list::activate(int entityID)
+{
+    _swapWithActive<T>(entityID, true);
 }
 
 template <typename T>
 void component_list::deactivate(int entityID)
 {
-    if (!componentList_)
-        return;
-
-    if (!_hasEntity(entityID))
-        return;
-
-    int index = entityToIndex_[entityID];
-    
-    if (index >= active_)
-        return;
-
-    --active_;
-    _swapWithActive<T>(index);
+    _swapWithActive<T>(entityID, false);
 }
 
 template <typename T>
@@ -178,22 +144,22 @@ T* component_list::get(int entityID)
 
 // PUBLIC ACCESSOR FUNCTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-int component_list::size()
+int component_list::size() const
 {
     return size_;
 }
 
-int component_list::active()
+int component_list::active() const
 {
     return active_;
 }
 
-int component_list::inactive()
+int component_list::inactive() const
 {
     return size_ - active_;
 }
 
-bool component_list::isActive(int entityID)
+bool component_list::isActive(int entityID) const
 {
     if (!_hasEntity(entityID))
         return false;
@@ -228,8 +194,21 @@ void component_list::_resize()
 }
 
 template <typename T>
-void component_list::_swapWithActive(int index)
+void component_list::_swapWithActive(int entityID, bool activating)
 {
+    if (!_hasEntity(entityID))
+        return;
+
+    int index = entityToIndex_[entityID];
+
+    if (activating && (index < active_))
+        return;
+    if (!activating && (index >= active_))
+        return;
+
+    if (!activating)
+        --active_;
+
     T* componentList = reinterpret_cast<T*>(componentList_);
     T component = componentList[active_];
     componentList[active_] = componentList[index];
@@ -237,15 +216,21 @@ void component_list::_swapWithActive(int index)
 
     entityToIndex_[componentList[active_].entityID] = active_;
     entityToIndex_[componentList[index].entityID] = index;
+
+    if (activating)
+        ++active_;
 }
 
 inline
-bool component_list::_isFull()
+bool component_list::_isFull() const
 {
     return (size_ == capacity_);
 }
 
-bool component_list::_hasEntity(int entityID)
+bool component_list::_hasEntity(int entityID) const
 {
+    if (!componentList_)
+        return false;
+
     return (entityToIndex_.find(entityID) != entityToIndex_.end());
 }
