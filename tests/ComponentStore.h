@@ -1,6 +1,8 @@
 /* Author: GarRaptor
  * Description: holds a map of component_list containers. Goal is to be able to define a component
  *   and to store it in this structure for access by user-defined systems.
+ * Notes:
+ *  - must be destroyed by calling the rmComponentList for each ComponentList
  */
 
 #pragma once
