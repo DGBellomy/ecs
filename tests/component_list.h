@@ -45,7 +45,6 @@ public: // accessor functions
 
     int size() const;
     int active() const;
-    int inactive() const;
     bool isActive(int entityID) const;
 
 private: // helper functions
@@ -154,17 +153,12 @@ int component_list::active() const
     return active_;
 }
 
-int component_list::inactive() const
-{
-    return size_ - active_;
-}
-
 bool component_list::isActive(int entityID) const
 {
     if (!_hasEntity(entityID))
         return false;
 
-    int index = entityToIndex_[entityID];
+    const int index = entityToIndex_.find(entityID)->second;
 
     return index < active_;
 }

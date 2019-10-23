@@ -54,12 +54,10 @@ public: // accessor functions
     bool isActive(const std::string& name, int entityID) const;
     bool isComponentList(const std::string& name) const;
 
-    // TODO: figure out if this has any usefulness???
-    //void getComponentNames(std::string*& buffer, int size);
-
 private: // helper functions
 
-    component_list* _getComponentList(const std::string& name);
+    component_list* _getComponentList(const std::string& name) const;
+    void _rmComponentList(const std::string& name);
 };
 
 
@@ -121,7 +119,7 @@ T* ComponentStore::getComponent(const std::string& name, int entityID)
 }
 
 template <typename T>
-bool rmComponent(const std::string& name, int entityID)
+bool ComponentStore::rmComponent(const std::string& name, int entityID)
 {
     component_list* componentList = _getComponentList(name);
 
@@ -133,9 +131,9 @@ bool rmComponent(const std::string& name, int entityID)
 }
 
 template <typename T>
-bool activateComponent(const std::string& name, int entityID)
+bool ComponentStore::activateComponent(const std::string& name, int entityID)
 {
-    component_list* componentList = _getComponentList(component.name);
+    component_list* componentList = _getComponentList(name);
 
     if (!componentList)
         return false;
@@ -145,9 +143,9 @@ bool activateComponent(const std::string& name, int entityID)
 }
 
 template <typename T>
-bool deactivateComponent(const std::string& name, int entityID)
+bool ComponentStore::deactivateComponent(const std::string& name, int entityID)
 {
-    component_list* componentList = _getComponentList(component.name);
+    component_list* componentList = _getComponentList(name);
 
     if (!componentList)
         return false;
@@ -182,7 +180,7 @@ int ComponentStore::active(const std::string& name) const
 
 bool ComponentStore::isActive(const std::string& name, int entityID) const
 {
-    return componentsMap_[name].isActive(entityID);
+    return (componentsMap_.find(name)->second).isActive(entityID);
 }
 
 bool ComponentStore::isComponentList(const std::string& name) const
@@ -191,32 +189,17 @@ bool ComponentStore::isComponentList(const std::string& name) const
 }
 
 
-// TODO: figure out if this has any usefulness???
-/*void ComponentStore::getComponentNames(std::string*& buffer, int size)
-{
-    if (size < this->size())
-        return;
-
-    components_map::iterator it = componentsMap_.begin();
-    for (int i = 0; it != componentsMap_.end(); ++it, ++i)
-    {
-        buffer[i] = it->first;
-    }
-}*/
-
-
 // PRIVATE HELPER FUNCTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-component_list* ComponentStore::_getComponentList(const std::string& name)
+component_list* ComponentStore::_getComponentList(const std::string& name) const
 {
-    if (isComponentList(name))
-    {
-        return &componentsMap_[name];
-    }
-    return nullptr;
+    if (!isComponentList(name))
+        return nullptr;
+
+    return const_cast<component_list*>(&(componentsMap_.find(name)->second));
 }
 
-component_list* ComponentStore::_rmComponentList(const std::string& name)
+void ComponentStore::_rmComponentList(const std::string& name)
 {
     if (!isComponentList(name))
         return;

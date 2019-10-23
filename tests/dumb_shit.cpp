@@ -48,6 +48,8 @@ void check_tolower()
     printf("name: %s", dgb::utils::tolower("HELLO\n").c_str());
 }
 
+// COMPONENTS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 struct Component {
     static const std::string name;
     int entityID;
@@ -66,6 +68,8 @@ struct VelocityComponent {
     bool isMoving;
 };
 const std::string VelocityComponent::name = "velocity";
+
+// COMPONENTS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 void check_component_list()
 {
