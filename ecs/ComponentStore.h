@@ -11,7 +11,6 @@
 #include <map>
 #include <string>
 
-#include "utils.h"
 #include "component_list.h"
 
 typedef std::map<std::string, component_list> components_map;
