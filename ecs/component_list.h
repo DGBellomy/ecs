@@ -15,11 +15,8 @@ class component_list {
     int size_;
     int capacity_;
     std::map<int, int> entityToIndex_;
+    size_t componentSize_;
 
-    component_list(const component_list&) = delete;
-    component_list(const component_list&&) = delete;
-    component_list& operator= (const component_list&) = delete;
-    component_list& operator= (const component_list&&) = delete;
 
 public:
 
@@ -28,32 +25,63 @@ public:
       active_(0),
       size_(0),
       capacity_(capacity),
-      entityToIndex_()
+      entityToIndex_(),
+      componentSize_(0)
     {}
 
-public: // modifying functions
 
-    template <typename T> void append(const T& component);
-    template <typename T> void remove(int entityID);
-    template <typename T> void destroy();
-    template <typename T> void activate(int entityID);
-    template <typename T> void deactivate(int entityID);
-    template <typename T> T* get();
-    template <typename T> T* get(int entityID);
+    template <typename T>
+    void append(const T& component);
 
-public: // accessor functions
+    template <typename T>
+    void remove(int entityID);
+
+    template <typename T>
+    void destroy();
+
+    template <typename T>
+    void activate(int entityID);
+
+    template <typename T>
+    void deactivate(int entityID);
+
+    template <typename T>
+    T* get();
+
+    template <typename T>
+    T* get(int entityID);
+
 
     int size() const;
+
     int active() const;
+
     bool isActive(int entityID) const;
 
-private: // helper functions
+private:
 
-    template <typename T> void _init();
-    template <typename T> void _resize();
-    template <typename T> void _swapWithActive(int entityID, bool activating);
-    inline bool _isFull() const;
+    component_list(const component_list&) = delete;
+    component_list(const component_list&&) = delete;
+    component_list& operator= (const component_list&) = delete;
+    component_list& operator= (const component_list&&) = delete;
+
+
+    template <typename T>
+    void _init();
+
+    template <typename T>
+    void _resize();
+
+    template <typename T>
+    void _swapWithActive(int entityID, bool activating);
+
+    inline
+    bool _isFull() const;
+
     bool _hasEntity(int entityID) const;
+
+    template <typename T>
+    bool _matchSize() const;
 };
 
 
@@ -64,6 +92,12 @@ void component_list::append(const T& component)
 {
     if (!componentList_)
         _init<T>();
+
+    if (!_matchSize<T>())
+        return;
+
+    if (_hasEntity(component.entityID))
+        return;
 
     if (_isFull())
         _resize<T>();
@@ -79,6 +113,9 @@ void component_list::append(const T& component)
 template <typename T>
 void component_list::remove(int entityID)
 {
+    if (!_matchSize<T>())
+        return;
+
     if (!_hasEntity(entityID))
         return;
 
@@ -103,6 +140,9 @@ void component_list::destroy()
     if (!componentList_)
         return;
 
+    if (!_matchSize<T>())
+        return;
+
     T* componentList = reinterpret_cast<T*>(componentList_);
     delete[] componentList;
 
@@ -116,24 +156,36 @@ void component_list::destroy()
 template <typename T>
 void component_list::activate(int entityID)
 {
+    if (!_matchSize<T>())
+        return;
+
     _swapWithActive<T>(entityID, true);
 }
 
 template <typename T>
 void component_list::deactivate(int entityID)
 {
+    if (!_matchSize<T>())
+        return;
+
     _swapWithActive<T>(entityID, false);
 }
 
 template <typename T>
 T* component_list::get()
 {
+    if (!_matchSize<T>())
+        return nullptr;
+
     return reinterpret_cast<T*>(componentList_);
 }
 
 template <typename T>
 T* component_list::get(int entityID)
 {
+    if (!_matchSize<T>())
+        return nullptr;
+
     if (!_hasEntity(entityID))
         return nullptr;
 
@@ -170,6 +222,7 @@ void component_list::_init()
 {
     T* componentList = new T[capacity_];
     componentList_ = reinterpret_cast<void*>(componentList);
+    componentSize_ = sizeof(T);
 }
 
 template <typename T>
@@ -227,4 +280,10 @@ bool component_list::_hasEntity(int entityID) const
         return false;
 
     return (entityToIndex_.find(entityID) != entityToIndex_.end());
+}
+
+template <typename T>
+bool component_list::_matchSize() const
+{
+    return sizeof(T) == componentSize_;
 }
