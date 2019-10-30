@@ -13,16 +13,6 @@
 
 #include "component_list.h"
 
-
-#define Component(comp, data) \
-    struct comp {\
-        static const std::string name;\
-        int entityID;\
-        data\
-    };\
-    const std::string comp::name = #comp;
-
-
 typedef std::map<std::string, component_list> components_map;
 
 class ComponentStore {
