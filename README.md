@@ -21,3 +21,25 @@ ecs->getComponentList<T>(componentName);
 ecs->getEntityListByTuples(componentNames);
 ```
 
+
+# interface to setup entity
+```
+int entity_id = ECS::registerEntity();
+Comp newComp = Comp();
+ECS::addComponent<Comp>(entity_id, newComp);
+...
+// DONE
+```
+
+# interface to setup system
+```
+void MoveSystem()
+{
+    Comp* componentList = ECS::getComponentList(Comp::name);
+
+    for (int i = 0; i < ECS::size(Comp::name); i++)
+    {
+        // do stuff
+    }
+}
+```
