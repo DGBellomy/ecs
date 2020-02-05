@@ -1,5 +1,6 @@
 /* Author: GarRaptor
  * Description: Keep track of Entities
+ *   stores a list of component names associated with an entity.
  */
 
 #pragma once
@@ -8,14 +9,14 @@
 #include <vector>
 #include <string>
 
-class Entity {
+class EntityStore {
     static int ID_ = 0;
     std::map<int, std::vector<std::string>> entities_;
 
 public:
-    static Entity* getInstance()
+    static EntityStore* getInstance()
     {
-        static Entity* instance = new Entity();
+        static EntityStore* instance = new EntityStore();
         return instance;
     }
 

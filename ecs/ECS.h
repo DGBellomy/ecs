@@ -7,7 +7,7 @@
 #include <map>
 #include <vector>
 
-#include "Entity.h"
+#include "EntityStore.h"
 #include "ComponentStore.h"
 #include "Systems.h"
 
@@ -17,16 +17,16 @@ int g_EntityID = 0;
 
 #define Component(comp, data) \
     struct comp {\
+        data\
         static const std::string name;\
         int entityID;\
-        data\
     };\
     const std::string comp::name = #comp
 
 
 int saveEntity()
 {
-    Entity::getInstance()->addEntity
+    Entity::getInstance()->addEntity();
 }
 
 void rmEntity(int entityID);
