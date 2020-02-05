@@ -21,7 +21,7 @@ int g_EntityID = 0;
         int entityID;\
         data\
     };\
-    const std::string comp::name = #comp;
+    const std::string comp::name = #comp
 
 
 int saveEntity()
