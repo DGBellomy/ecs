@@ -27,6 +27,7 @@ public:
 
     void addEntity(int entityID)
     {
+        // TODO: why do I short circuit if entityID is not found in entities_ ???
         if (entities_.find(entityID) == entities_.end())
             return;
 
