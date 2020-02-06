@@ -13,9 +13,9 @@ namespace ecs {
 
     EntityId g_EntityID = 0;
 
-    int saveEntity()
+    void saveEntity(EntityId entityId)
     {
-        entity::EntityStore::getInstance()->addEntity();
+        entity::EntityStore::getInstance()->addEntity(entityId);
     }
 
     void rmEntity(EntityId entityID);

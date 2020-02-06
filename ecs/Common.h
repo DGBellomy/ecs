@@ -12,11 +12,10 @@
 
 #define Component(comp, data) \
     struct comp {\
+        static std::string ID() { return #comp; };\
         data\
-        static ComponentId name;\
         EntityId entityID;\
-    };\
-    ComponentId comp::name = #comp
+    }
 
 typedef int EntityId;
 typedef const std::string ComponentId;

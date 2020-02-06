@@ -89,7 +89,7 @@ void check_component_store()
 {
     ComponentStore* cs = ComponentStore::getInstance();
 
-    if (cs->addComponentList(Position::name))
+    if (cs->addComponentList(Position::ID()))
     {
         Position pc;
         pc.entityID = 0;
@@ -102,7 +102,7 @@ void check_component_store()
         cs->addComponent<Position>(pc);
     }
 
-    if (cs->addComponentList(Velocity::name))
+    if (cs->addComponentList(Velocity::ID()))
     {
         Velocity vc;
         vc.entityID = 0;
@@ -117,7 +117,7 @@ void check_component_store()
         cs->addComponent<Velocity>(vc);
     }
 
-    Position* ppc = cs->getComponentList<Position>(Position::name);
+    Position* ppc = cs->getComponentList<Position>(Position::ID());
     if (ppc != nullptr)
         for (int i = 0; i < 2; i++)
         {
@@ -125,7 +125,7 @@ void check_component_store()
             printf("position loc: %ld\n", reinterpret_cast<long>(&ppc[i]));
         }
 
-    Velocity* pvc = cs->getComponentList<Velocity>(Velocity::name);
+    Velocity* pvc = cs->getComponentList<Velocity>(Velocity::ID());
     if (pvc != nullptr)
         for (int i = 0; i < 2; i++)
         {

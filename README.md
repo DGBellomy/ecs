@@ -35,9 +35,9 @@ ECS::addComponent<Comp>(entity_id, newComp);
 ```
 void MoveSystem()
 {
-    Comp* componentList = ECS::getComponentList(Comp::name);
+    Comp* componentList = ECS::getComponentList(Comp::ID());
 
-    for (int i = 0; i < ECS::size(Comp::name); i++)
+    for (int i = 0; i < ECS::size(Comp::ID()); i++)
     {
         // do stuff
     }

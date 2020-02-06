@@ -11,7 +11,7 @@ namespace ecs {
     namespace entity {
 
         class EntityStore {
-            static int ID_ = 0;
+            static EntityId ID_;
             std::map<EntityId, std::vector<std::string>> entities_;
 
         public:
@@ -21,13 +21,15 @@ namespace ecs {
                 return instance;
             }
 
-            static int getID()
+            static EntityId getID()
             {
+                static EntityId id = 0;
+                ID_ = id++;
                 return ID_;
             }
 
 
-            void addEntity(int entityID)
+            void addEntity(EntityId entityID)
             {
                 // TODO: why do I short circuit if entityID is not found in entities_ ???
                 if (entities_.find(entityID) == entities_.end())
@@ -36,28 +38,30 @@ namespace ecs {
                 entities_[ID_];
             }
 
-            void rmEntity(int entityID)
+            void rmEntity(EntityId entityID)
             {
                 if (entities_.find(entityID) == entities_.end())
                     return;
                 // TODO: remove entityID
             }
 
-            void addComponent(const std::string& name)
+            void addComponent(ComponentId& componentId)
             {
-                entities_[ID_].push_back(name);
+                entities_[ID_].push_back(componentId);
             }
 
-            void rmComponent(int entityID, const std::string& name)
+            void rmComponent(EntityId entityID, ComponentId& ComponentId)
             {
                 // TODO: define
             }
 
-            std::vector<std::string> getComponents(int entityID)
+            std::vector<std::string> getComponents(EntityId entityID)
             {
                 return entities_[entityID];
             }
         };
+
+        EntityId EntityStore::ID_ = 0;
 
     };
 };
