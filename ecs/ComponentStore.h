@@ -120,18 +120,19 @@ namespace ecs {
         template <typename T>
         bool ComponentStore::addComponent(const T& component)
         {
-            ComponentList* componentList = _getComponentList(component.name);
+            ComponentList* componentList = _getComponentList(T::ID());
 
             if (!componentList)
             {
-                if (!addComponentList(component.name))
+                if (!addComponentList(T::ID()))
                     return false;
 
-                ComponentList* componentList = _getComponentList(component.name);
+                ComponentList* componentList = _getComponentList(T::ID());
                 if (!componentList)
                     return false;
             }
 
+            // TODO: get component ptr from append method (if nullptr then failure)
             componentList->append<T>(component);
             return true;
         }

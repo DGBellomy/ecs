@@ -90,6 +90,7 @@ namespace ecs {
 
 // PUBLIC MODIFYING FUNCTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+// TODO: return ptr to component or nullptr for failure
         template <typename T>
         void ComponentList::append(const T& component)
         {
