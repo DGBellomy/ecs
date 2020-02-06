@@ -7,12 +7,14 @@
 
 #include "Common.h"
 
+typedef std::map<ComponentId, void*> ComponentPtrMap;
+typedef std::map<EntityId, ComponentPtrMap> EntityMap;
+
 namespace ecs {
     namespace entity {
 
         class EntityStore {
-            static EntityId ID_;
-            std::map<EntityId, std::vector<std::string>> entities_;
+            EntityMap entities_;
 
         public:
             static EntityStore* getInstance()
@@ -21,21 +23,14 @@ namespace ecs {
                 return instance;
             }
 
-            static EntityId getID()
-            {
-                static EntityId id = 0;
-                ID_ = id++;
-                return ID_;
-            }
-
-
             void addEntity(EntityId entityID)
             {
                 // TODO: why do I short circuit if entityID is not found in entities_ ???
                 if (entities_.find(entityID) == entities_.end())
                     return;
+                // TODO: if entity does not exist, then add entityID to data structure
 
-                entities_[ID_];
+                entities_[entityID];
             }
 
             void rmEntity(EntityId entityID)
@@ -45,9 +40,9 @@ namespace ecs {
                 // TODO: remove entityID
             }
 
-            void addComponent(ComponentId& componentId)
+            void addComponent(EntityId entityId, ComponentId& componentId)
             {
-                entities_[ID_].push_back(componentId);
+//                entities_[entityId].push_back(componentId);
             }
 
             void rmComponent(EntityId entityID, ComponentId& ComponentId)
@@ -57,11 +52,9 @@ namespace ecs {
 
             std::vector<std::string> getComponents(EntityId entityID)
             {
-                return entities_[entityID];
+//                return entities_[entityID];
             }
         };
-
-        EntityId EntityStore::ID_ = 0;
 
     };
 };

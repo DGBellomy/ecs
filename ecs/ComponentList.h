@@ -34,7 +34,7 @@ namespace ecs {
 
 
             template <typename T>
-            void append(const T& component);
+            T* append(const T& component);
 
             template <typename T>
             void remove(EntityId entityID);
@@ -90,18 +90,17 @@ namespace ecs {
 
 // PUBLIC MODIFYING FUNCTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-// TODO: return ptr to component or nullptr for failure
         template <typename T>
-        void ComponentList::append(const T& component)
+        T* ComponentList::append(const T& component)
         {
             if (!componentList_)
                 _init<T>();
 
             if (!_matchSize<T>())
-                return;
+                return nullptr;
 
             if (_hasEntity(component.entityID))
-                return;
+                return nullptr;
 
             if (_isFull())
                 _resize<T>();
@@ -110,8 +109,10 @@ namespace ecs {
             componentList[size_++] = componentList[active_];
             componentList[active_++] = component;
 
-            entityToIndex_[component.entityID] = active_ - 1;
+            entityToIndex_[componentList[active_ - 1].entityID] = active_ - 1;
             entityToIndex_[componentList[size_ - 1].entityID] = size_ - 1;
+
+            return &componentList[active_ - 1];
         }
 
         template <typename T>

@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <cstdio>
+#include <cstdio>  // TODO: remove this include
 #include "Common.h"
 #include "EntityStore.h"
 #include "ComponentStore.h"
@@ -34,14 +34,16 @@ namespace ecs {
 
         std::printf("\n\n%s: { x: %d, y: %d, id: %d }\n", T::ID().c_str(), component.x, component.y, component.entityID);
 
-        // TODO: EntityStore needs a map<entityId, map<componentID, componentPtr>>
+        T* componentPtr = componentStore->addComponent<T>(component);
 
-        // TODO: get T* from addComponent method and store that in EntityStore
-//        componentStore->addComponent<T>(component);
+        if (componentPtr)
+            std::printf("comp ptr => { x: %d, y: %d, id: %d }", componentPtr->x, componentPtr->y, componentPtr->entityID);
+        else
+            std::printf("comp ptr fail: %x", componentPtr);
 
         // TODO: pass ptr to addComponent (void*) for quick access lookup,
         //  and entityId so we know which entity
-//        entity::EntityStore::getInstance()->addComponent(T::ID());
+        entity::EntityStore::getInstance()->addComponent(T::ID());
     }
 
     template <typename T> void rmComponent(ComponentId& name);
