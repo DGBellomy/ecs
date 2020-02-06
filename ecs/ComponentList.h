@@ -11,6 +11,7 @@
 
 namespace ecs {
     namespace component {
+
         class ComponentList {
             void* componentList_;
             int active_;
@@ -289,5 +290,6 @@ namespace ecs {
         {
             return sizeof(T) == componentSize_;
         }
+
     };
 };

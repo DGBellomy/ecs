@@ -4,13 +4,14 @@
 
 #pragma once
 
-#include <vector>
+#include "Common.h"
 
-typedef void (*sysFuncPtr)(void);
+namespace ecs {
+    namespace system {
 
-class System {
-};
+        class Systems {
+            std::vector<SystemFunctionPtr> systems_;
+        };
 
-class Systems {
-    std::vector<sysFuncPtr> systems_;
+    };
 };

@@ -4,49 +4,40 @@
 
 #pragma once
 
-#include <map>
-#include <vector>
-
+#include "Common.h"
 #include "EntityStore.h"
 #include "ComponentStore.h"
 #include "Systems.h"
 
+namespace ecs {
 
-int g_EntityID = 0;
+    EntityId g_EntityID = 0;
 
+    int saveEntity()
+    {
+        entity::EntityStore::getInstance()->addEntity();
+    }
 
-#define Component(comp, data) \
-    struct comp {\
-        data\
-        static const std::string name;\
-        int entityID;\
-    };\
-    const std::string comp::name = #comp
+    void rmEntity(EntityId entityID);
 
+    template <typename T>
+    void addComponent(const T& component)
+    {
+        Entity::getInstance()->addComponent(component.name);
+    }
 
-int saveEntity()
-{
-    Entity::getInstance()->addEntity();
-}
-
-void rmEntity(int entityID);
-
-template <typename T>
-void addComponent(const T& component)
-{
-    Entity::getInstance()->addComponent(component.name);
-}
-
-template <typename T> void rmComponent(const std::string& name);
-template <typename T> T* getComponent(int entityID, const std::string& name);
-template <typename T> void activateComponent(int entityID, const std::string& name);
-template <typename T> void deactivateComponent(int entityID, const std::string& name);
+    template <typename T> void rmComponent(ComponentId& name);
+    template <typename T> T* getComponent(EntityId entityID, ComponentId& name);
+    template <typename T> void activateComponent(EntityId entityID, ComponentId& name);
+    template <typename T> void deactivateComponent(EntityId entityID, ComponentId& name);
 
 // void addSystem(void (funcPtr)(void));
 // void rmSystem(void (funcPtr)(void));
 // void enableSystem(void (funcPtr)(void));
 // void disableSystem(void (funcPtr)(void));
 
-template <typename T> T* getComponentList(const std::string& name);
-int* getEntityList(const std::string* componentTuple);
+    template <typename T> T* getComponentList(ComponentId& name);
+    int* getEntityList(ComponentId* componentTuple);
 // TODO: get ComponentList with list of entity IDs
+
+};

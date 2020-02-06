@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string>
 
-#include "../ecs/component_list.h"
+#include "../ecs/ComponentList.h"
 #include "../ecs/ComponentStore.h"
 
 #define PI 3.1415
