@@ -19,6 +19,7 @@
 
 typedef int EntityId;
 typedef const std::string ComponentId;
+
 typedef void (*SystemFunctionPtr)();
 
 #endif //ECS_EXAMPLES_COMMON_H

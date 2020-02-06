@@ -24,69 +24,69 @@ namespace ecs {
 
         public:
 
-            static ComponentStore* getInstance()
-            {
-                static ComponentStore* instance = new ComponentStore();
+            static ComponentStore *getInstance() {
+                static ComponentStore *instance = new ComponentStore();
                 return instance;
             }
 
 
-            bool addComponentList(ComponentId& componentId);
+            bool addComponentList(ComponentId &componentId);
 
-            template <typename T>
-            T* getComponentList(ComponentId& componentId);
+            template<typename T>
+            T *getComponentList(ComponentId &componentId);
 
-            template <typename T>
-            void rmComponentList(ComponentId& componentId);
+            template<typename T>
+            void rmComponentList(ComponentId &componentId);
 
-            template <typename T>
-            T* addComponent(const T& component);
+            template<typename T>
+            T *addComponent(const T &component);
 
-            template <typename T>
-            T* getComponent(ComponentId& componentId, EntityId entityID);
+            template<typename T>
+            T *getComponent(ComponentId &componentId, EntityId entityID);
 
-            template <typename T>
-            bool rmComponent(ComponentId& componentId, EntityId entityID);
+            template<typename T>
+            bool rmComponent(ComponentId &componentId, EntityId entityID);
 
-            template <typename T>
-            bool deactivateComponent(ComponentId& componentId, EntityId entityID);
+            template<typename T>
+            bool deactivateComponent(ComponentId &componentId, EntityId entityID);
 
-            template <typename T>
-            bool activateComponent(ComponentId& componentId, EntityId entityID);
+            template<typename T>
+            bool activateComponent(ComponentId &componentId, EntityId entityID);
 
 
-            template <typename T>
-            int size(ComponentId& componentId) const;
+            template<typename T>
+            int size(ComponentId &componentId) const;
 
-            template <typename T>
-            int active(ComponentId& componentId) const;
+            template<typename T>
+            int active(ComponentId &componentId) const;
 
-            bool isActive(ComponentId& componentId, EntityId entityID) const;
+            bool isActive(ComponentId &componentId, EntityId entityID) const;
 
-            bool isComponentList(ComponentId& componentId) const;
+            bool isComponentList(ComponentId &componentId) const;
 
         private:
 
-            ComponentStore():
-                    componentsMap_()
-            {}
+            ComponentStore() :
+                    componentsMap_() {}
 
-            ComponentStore(const ComponentStore&) = delete;
-            ComponentStore(const ComponentStore&&) = delete;
-            ComponentStore& operator= (const ComponentStore&) = delete;
-            ComponentStore& operator= (const ComponentStore&&) = delete;
+            ComponentStore(const ComponentStore &) = delete;
+
+            ComponentStore(const ComponentStore &&) = delete;
+
+            ComponentStore &operator=(const ComponentStore &) = delete;
+
+            ComponentStore &operator=(const ComponentStore &&) = delete;
 
 
-            ComponentList* _getComponentList(ComponentId& componentId) const;
+            ComponentList *_getComponentList(ComponentId &componentId) const;
 
-            void _rmComponentList(ComponentId& componentId);
+            void _rmComponentList(ComponentId &componentId);
         };
 
 
 // PUBLIC MODIFYING FUNCTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        bool ComponentStore::addComponentList(ComponentId& componentId)
-        {
+        bool ComponentStore::addComponentList(ComponentId &componentId) {
             if (isComponentList(componentId))
                 return false;
 
@@ -94,10 +94,9 @@ namespace ecs {
             return true;
         }
 
-        template <typename T>
-        T* ComponentStore::getComponentList(ComponentId& componentId)
-        {
-            ComponentList* componentList = _getComponentList(componentId);
+        template<typename T>
+        T *ComponentStore::getComponentList(ComponentId &componentId) {
+            ComponentList *componentList = _getComponentList(componentId);
 
             if (!componentList)
                 return nullptr;
@@ -105,10 +104,9 @@ namespace ecs {
             return componentList->get<T>();
         }
 
-        template <typename T>
-        void ComponentStore::rmComponentList(ComponentId& componentId)
-        {
-            ComponentList* componentList = _getComponentList(componentId);
+        template<typename T>
+        void ComponentStore::rmComponentList(ComponentId &componentId) {
+            ComponentList *componentList = _getComponentList(componentId);
 
             if (!componentList)
                 return;
@@ -117,13 +115,11 @@ namespace ecs {
             _rmComponentList(componentId);
         }
 
-        template <typename T>
-        T* ComponentStore::addComponent(const T& component)
-        {
-            ComponentList* componentList = _getComponentList(T::ID());
+        template<typename T>
+        T *ComponentStore::addComponent(const T &component) {
+            ComponentList *componentList = _getComponentList(T::ID());
 
-            if (!componentList)
-            {
+            if (!componentList) {
                 if (!addComponentList(T::ID()))
                     return nullptr;
 
@@ -135,10 +131,9 @@ namespace ecs {
             return componentList->append<T>(component);
         }
 
-        template <typename T>
-        T* ComponentStore::getComponent(ComponentId& componentId, EntityId entityID)
-        {
-            ComponentList* componentList = _getComponentList(componentId);
+        template<typename T>
+        T *ComponentStore::getComponent(ComponentId &componentId, EntityId entityID) {
+            ComponentList *componentList = _getComponentList(componentId);
 
             if (!componentList)
                 return nullptr;
@@ -146,10 +141,9 @@ namespace ecs {
             return componentList->get<T>(entityID);
         }
 
-        template <typename T>
-        bool ComponentStore::rmComponent(ComponentId& componentId, EntityId entityID)
-        {
-            ComponentList* componentList = _getComponentList(componentId);
+        template<typename T>
+        bool ComponentStore::rmComponent(ComponentId &componentId, EntityId entityID) {
+            ComponentList *componentList = _getComponentList(componentId);
 
             if (!componentList)
                 return false;
@@ -158,10 +152,9 @@ namespace ecs {
             return true;
         }
 
-        template <typename T>
-        bool ComponentStore::activateComponent(ComponentId& componentId, EntityId entityID)
-        {
-            ComponentList* componentList = _getComponentList(componentId);
+        template<typename T>
+        bool ComponentStore::activateComponent(ComponentId &componentId, EntityId entityID) {
+            ComponentList *componentList = _getComponentList(componentId);
 
             if (!componentList)
                 return false;
@@ -170,10 +163,9 @@ namespace ecs {
             return true;
         }
 
-        template <typename T>
-        bool ComponentStore::deactivateComponent(ComponentId& componentId, EntityId entityID)
-        {
-            ComponentList* componentList = _getComponentList(componentId);
+        template<typename T>
+        bool ComponentStore::deactivateComponent(ComponentId &componentId, EntityId entityID) {
+            ComponentList *componentList = _getComponentList(componentId);
 
             if (!componentList)
                 return false;
@@ -184,10 +176,9 @@ namespace ecs {
 
 // PUBLIC ACCESSOR FUNCTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        template <typename T>
-        int ComponentStore::size(ComponentId& componentId) const
-        {
-            ComponentList* componentList = _getComponentList(componentId);
+        template<typename T>
+        int ComponentStore::size(ComponentId &componentId) const {
+            ComponentList *componentList = _getComponentList(componentId);
 
             if (!componentList)
                 return -1;
@@ -195,10 +186,9 @@ namespace ecs {
             return componentList->size();
         }
 
-        template <typename T>
-        int ComponentStore::active(ComponentId& componentId) const
-        {
-            ComponentList* componentList = _getComponentList(componentId);
+        template<typename T>
+        int ComponentStore::active(ComponentId &componentId) const {
+            ComponentList *componentList = _getComponentList(componentId);
 
             if (!componentList)
                 return -1;
@@ -206,29 +196,25 @@ namespace ecs {
             return componentList->active();
         }
 
-        bool ComponentStore::isActive(ComponentId& componentId, EntityId entityID) const
-        {
+        bool ComponentStore::isActive(ComponentId &componentId, EntityId entityID) const {
             return (componentsMap_.find(componentId)->second).isActive(entityID);
         }
 
-        bool ComponentStore::isComponentList(ComponentId& componentId) const
-        {
+        bool ComponentStore::isComponentList(ComponentId &componentId) const {
             return (componentsMap_.find(componentId) != componentsMap_.end());
         }
 
 
 // PRIVATE HELPER FUNCTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        ComponentList* ComponentStore::_getComponentList(ComponentId& componentId) const
-        {
+        ComponentList *ComponentStore::_getComponentList(ComponentId &componentId) const {
             if (!isComponentList(componentId))
                 return nullptr;
 
-            return const_cast<ComponentList*>(&(componentsMap_.find(componentId)->second));
+            return const_cast<ComponentList *>(&(componentsMap_.find(componentId)->second));
         }
 
-        void ComponentStore::_rmComponentList(ComponentId& componentId)
-        {
+        void ComponentStore::_rmComponentList(ComponentId &componentId) {
             if (!isComponentList(componentId))
                 return;
 

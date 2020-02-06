@@ -13,7 +13,7 @@ namespace ecs {
     namespace component {
 
         class ComponentList {
-            void* componentList_;
+            void *componentList_;
             int active_;
             int size_;
             int capacity_;
@@ -23,36 +23,35 @@ namespace ecs {
 
         public:
 
-            ComponentList(int capacity=_DEFAULT_COMPONENT_VECTOR_SIZE):
+            ComponentList(int capacity = _DEFAULT_COMPONENT_VECTOR_SIZE) :
                     componentList_(nullptr),
                     active_(0),
                     size_(0),
                     capacity_(capacity),
                     entityToIndex_(),
-                    componentSize_(0)
-            {}
+                    componentSize_(0) {}
 
 
-            template <typename T>
-            T* append(const T& component);
+            template<typename T>
+            T *append(const T &component);
 
-            template <typename T>
+            template<typename T>
             void remove(EntityId entityID);
 
-            template <typename T>
+            template<typename T>
             void destroy();
 
-            template <typename T>
+            template<typename T>
             void activate(EntityId entityID);
 
-            template <typename T>
+            template<typename T>
             void deactivate(EntityId entityID);
 
-            template <typename T>
-            T* get();
+            template<typename T>
+            T *get();
 
-            template <typename T>
-            T* get(EntityId entityID);
+            template<typename T>
+            T *get(EntityId entityID);
 
 
             int size() const;
@@ -63,19 +62,22 @@ namespace ecs {
 
         private:
 
-            ComponentList(const ComponentList&) = delete;
-            ComponentList(const ComponentList&&) = delete;
-            ComponentList& operator= (const ComponentList&) = delete;
-            ComponentList& operator= (const ComponentList&&) = delete;
+            ComponentList(const ComponentList &) = delete;
+
+            ComponentList(const ComponentList &&) = delete;
+
+            ComponentList &operator=(const ComponentList &) = delete;
+
+            ComponentList &operator=(const ComponentList &&) = delete;
 
 
-            template <typename T>
+            template<typename T>
             void _init();
 
-            template <typename T>
+            template<typename T>
             void _resize();
 
-            template <typename T>
+            template<typename T>
             void _swapWithActive(EntityId entityID, bool activating);
 
             inline
@@ -83,16 +85,15 @@ namespace ecs {
 
             bool _hasEntity(EntityId entityID) const;
 
-            template <typename T>
+            template<typename T>
             bool _matchSize() const;
         };
 
 
 // PUBLIC MODIFYING FUNCTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        template <typename T>
-        T* ComponentList::append(const T& component)
-        {
+        template<typename T>
+        T *ComponentList::append(const T &component) {
             if (!componentList_)
                 _init<T>();
 
@@ -105,7 +106,7 @@ namespace ecs {
             if (_isFull())
                 _resize<T>();
 
-            T* componentList = reinterpret_cast<T*>(componentList_);
+            T *componentList = reinterpret_cast<T *>(componentList_);
             componentList[size_++] = componentList[active_];
             componentList[active_++] = component;
 
@@ -115,9 +116,8 @@ namespace ecs {
             return &componentList[active_ - 1];
         }
 
-        template <typename T>
-        void ComponentList::remove(EntityId entityID)
-        {
+        template<typename T>
+        void ComponentList::remove(EntityId entityID) {
             if (!_matchSize<T>())
                 return;
 
@@ -126,10 +126,9 @@ namespace ecs {
 
             int index = entityToIndex_[entityID];
             entityToIndex_.erase(entityID);
-            T* componentList = reinterpret_cast<T*>(componentList_);
+            T *componentList = reinterpret_cast<T *>(componentList_);
 
-            if (index < active_)
-            {
+            if (index < active_) {
                 componentList[index] = componentList[active_ - 1];
                 entityToIndex_[componentList[index].entityID] = index;
                 index = --active_;
@@ -139,16 +138,15 @@ namespace ecs {
             --size_;
         }
 
-        template <typename T>
-        void ComponentList::destroy()
-        {
+        template<typename T>
+        void ComponentList::destroy() {
             if (!componentList_)
                 return;
 
             if (!_matchSize<T>())
                 return;
 
-            T* componentList = reinterpret_cast<T*>(componentList_);
+            T *componentList = reinterpret_cast<T *>(componentList_);
             delete[] componentList;
 
             componentList_ = nullptr;
@@ -158,60 +156,53 @@ namespace ecs {
             entityToIndex_.clear();
         }
 
-        template <typename T>
-        void ComponentList::activate(EntityId entityID)
-        {
+        template<typename T>
+        void ComponentList::activate(EntityId entityID) {
             if (!_matchSize<T>())
                 return;
 
             _swapWithActive<T>(entityID, true);
         }
 
-        template <typename T>
-        void ComponentList::deactivate(EntityId entityID)
-        {
+        template<typename T>
+        void ComponentList::deactivate(EntityId entityID) {
             if (!_matchSize<T>())
                 return;
 
             _swapWithActive<T>(entityID, false);
         }
 
-        template <typename T>
-        T* ComponentList::get()
-        {
+        template<typename T>
+        T *ComponentList::get() {
             if (!_matchSize<T>())
                 return nullptr;
 
-            return reinterpret_cast<T*>(componentList_);
+            return reinterpret_cast<T *>(componentList_);
         }
 
-        template <typename T>
-        T* ComponentList::get(EntityId entityID)
-        {
+        template<typename T>
+        T *ComponentList::get(EntityId entityID) {
             if (!_matchSize<T>())
                 return nullptr;
 
             if (!_hasEntity(entityID))
                 return nullptr;
 
-            T* componentList = reinterpret_cast<T*>(componentList_);
+            T *componentList = reinterpret_cast<T *>(componentList_);
             return &componentList[entityToIndex_[entityID]];
         }
 
 // PUBLIC ACCESSOR FUNCTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        int ComponentList::size() const
-        {
+        int ComponentList::size() const {
             return size_;
         }
 
-        int ComponentList::active() const
-        {
+        int ComponentList::active() const {
             return active_;
         }
 
-        bool ComponentList::isActive(EntityId entityID) const
-        {
+        bool ComponentList::isActive(EntityId entityID) const {
             if (!_hasEntity(entityID))
                 return false;
 
@@ -222,32 +213,28 @@ namespace ecs {
 
 // PRIVATE HELPER FUNCTIONS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        template <typename T>
-        void ComponentList::_init()
-        {
-            T* componentList = new T[capacity_];
-            componentList_ = reinterpret_cast<void*>(componentList);
+        template<typename T>
+        void ComponentList::_init() {
+            T *componentList = new T[capacity_];
+            componentList_ = reinterpret_cast<void *>(componentList);
             componentSize_ = sizeof(T);
         }
 
-        template <typename T>
-        void ComponentList::_resize()
-        {
-            T* componentList = reinterpret_cast<T*>(componentList_);
-            T* newList = new T[2*capacity_];
+        template<typename T>
+        void ComponentList::_resize() {
+            T *componentList = reinterpret_cast<T *>(componentList_);
+            T *newList = new T[2 * capacity_];
 
-            for (int i = 0; i < size_; ++i)
-            {
+            for (int i = 0; i < size_; ++i) {
                 newList[i] = componentList[i];
             }
 
-            componentList_ = reinterpret_cast<void*>(newList);
+            componentList_ = reinterpret_cast<void *>(newList);
             delete[] componentList;
         }
 
-        template <typename T>
-        void ComponentList::_swapWithActive(EntityId entityID, bool activating)
-        {
+        template<typename T>
+        void ComponentList::_swapWithActive(EntityId entityID, bool activating) {
             if (!_hasEntity(entityID))
                 return;
 
@@ -261,7 +248,7 @@ namespace ecs {
             if (!activating)
                 --active_;
 
-            T* componentList = reinterpret_cast<T*>(componentList_);
+            T *componentList = reinterpret_cast<T *>(componentList_);
             T component = componentList[active_];
             componentList[active_] = componentList[index];
             componentList[index] = component;
@@ -274,22 +261,19 @@ namespace ecs {
         }
 
         inline
-        bool ComponentList::_isFull() const
-        {
+        bool ComponentList::_isFull() const {
             return (size_ == capacity_);
         }
 
-        bool ComponentList::_hasEntity(EntityId entityID) const
-        {
+        bool ComponentList::_hasEntity(EntityId entityID) const {
             if (!componentList_)
                 return false;
 
             return (entityToIndex_.find(entityID) != entityToIndex_.end());
         }
 
-        template <typename T>
-        bool ComponentList::_matchSize() const
-        {
+        template<typename T>
+        bool ComponentList::_matchSize() const {
             return sizeof(T) == componentSize_;
         }
 
