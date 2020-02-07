@@ -25,7 +25,6 @@ void InputSystem() {
     const int activePositionComponents = ecs::numActive(Position::ID());
 
     for (int i = 0; i < activePositionComponents; i++) {
-        // TODO: do the stuff
         Position position = positionList[i];
         if (x != position.x || y != position.y) {
             Velocity* velocity = ecs::getComponent<Velocity>(position.entityID);
@@ -52,7 +51,7 @@ void ShowLists() {
     Velocity *velocityList = ecs::getComponentList<Velocity>();
     const int activeVelocityComponents = ecs::numActive(Velocity::ID());
 
-    std::puts("VELOCITY: \n");
+    std::puts("VELOCITY:");
     for (int i = 0; i < activeVelocityComponents; i++) {
         std::printf("velocity: { x: %d, y: %d, entityID: %d }\n", velocityList[i].x, velocityList[i].y, velocityList[i].entityID);
     }
@@ -60,10 +59,21 @@ void ShowLists() {
     Position *positionList = ecs::getComponentList<Position>();
     const int activePositionComponents = ecs::numActive(Position::ID());
 
-    std::puts("POSITION: \n");
+    std::puts("\nPOSITION:");
     for (int i = 0; i < activePositionComponents; i++) {
         std::printf("position: { x: %d, y: %d, entityID: %d }\n", positionList[i].x, positionList[i].y, positionList[i].entityID);
     }
+
+    ecs::stop();
+}
+
+void createGoblin(int posX, int posY) {
+    Position position = {posX, posY};
+    Velocity velocity = {0, 0};
+
+    EntityId entityId = ecs::getNewEntityId();
+    ecs::addComponent<Position>(entityId, position);
+    ecs::addComponent<Velocity>(entityId, velocity);
 }
 
 int main() {
@@ -74,25 +84,14 @@ int main() {
     Position position = {5, 7};
     Velocity velocity = {0, 0};
 
-    std::printf("%s: { x: %d, y: %d, id: %d }\n", Position::ID().c_str(), position.x, position.y, position.entityID);
-    std::printf("%s: { x: %d, y: %d, id: %d }\n", Velocity::ID().c_str(), velocity.x, velocity.y, velocity.entityID);
+    createGoblin(5, 7);
+    createGoblin(12, 43);
 
-    // ecs::createEntity([...]) with list of components
+    ecs::registerSystem(InputSystem, OnInit);
+    ecs::registerSystem(MoveSystem, OnInit);
+    ecs::registerSystem(ShowLists, OnStart);
 
-    // TODO: figure out what the hell I'm going to do
-    // TODO: make typedef (entityID => unsigned int)
-
-    EntityId entityId = ecs::getNewEntityId();
-    ecs::addComponent<Position>(entityId, position);
-    ecs::addComponent<Velocity>(entityId, velocity);
-    // ecs::registerEntity(entityId); (No use???)
-
-    // TODO: callback will be a function ptr
-    // TODO: priority will default to 5 - [0:9]???
-    ecs::registerSystem(InputSystem);
-    ecs::registerSystem(MoveSystem);
-    ecs::registerSystem(ShowLists);
-
+    std::puts("Starting ECS Systems");
     ecs::run();
 
     return 0;

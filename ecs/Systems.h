@@ -10,7 +10,8 @@ namespace ecs {
     namespace system {
 
         class Systems {
-            std::vector<SystemFunctionPtr> systems_;
+            bool stop_;
+            std::map<SystemRunType, std::vector<SystemFunctionPtr>> systems_;
 
         public:
             static Systems *getInstance() {
@@ -18,8 +19,34 @@ namespace ecs {
                 return instance;
             }
 
-            void addSystem(SystemFunctionPtr systemFunctionPtr) {
-                systems_.push_back(systemFunctionPtr);
+            void addSystem(SystemFunctionPtr systemFunctionPtr, SystemRunType systemRunType) {
+                if (systems_.find(systemRunType) == systems_.end()) {
+                    systems_[systemRunType];
+                }
+
+                systems_[systemRunType].push_back(systemFunctionPtr);
+            }
+
+            void run() {
+                _runAll(OnInit);
+                _runAll(OnStart);
+                while(!stop_) {
+                    _runAll(OnTick);
+                    _runAll(OnLateTick);
+                }
+                _runAll(OnCleanup);
+                stop_ = false;
+            }
+
+            void stop() {
+                stop_ = true;
+            }
+
+        private:
+            void _runAll(SystemRunType systemRunType) {
+                for (size_t i = 0; i < systems_[systemRunType].size(); i++) {
+                    systems_[systemRunType][i]();
+                }
             }
         };
 

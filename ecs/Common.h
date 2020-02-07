@@ -22,4 +22,12 @@ typedef const std::string ComponentId;
 
 typedef void (*SystemFunctionPtr)();
 
+enum SystemRunType {
+    OnInit,
+    OnStart,
+    OnTick,
+    OnLateTick,
+    OnCleanup
+};
+
 #endif //ECS_EXAMPLES_COMMON_H

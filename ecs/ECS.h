@@ -13,10 +13,8 @@ namespace ecs {
 
     EntityId getNewEntityId(const std::string &tag = "") {
         static EntityId entityId = 0;
-        // TODO: create new entity in EntityStore
-        //  and pass entityName for lookup table in EntityStore
         entity::EntityStore::getInstance()->addEntity(entityId, tag);
-        return entityId;
+        return entityId++;
     }
 
     void rmEntity(EntityId entityID);
@@ -33,12 +31,16 @@ namespace ecs {
             entityStore->addComponent(entityId, T::ID(), componentPtr);
     }
 
-    void registerSystem(SystemFunctionPtr callback, int priority = 1) {
-        // TODO: add the callback to the systems with priority
+    void registerSystem(SystemFunctionPtr callback, SystemRunType systemRunType) {
+        system::Systems::getInstance()->addSystem(callback, systemRunType);
     }
 
     void run() {
-        // TODO: run the systems in order of priority
+        system::Systems::getInstance()->run();
+    }
+
+    void stop() {
+        system::Systems::getInstance()->stop();
     }
 
     size_t numActive(const ComponentId &componentId) {
@@ -66,7 +68,7 @@ namespace ecs {
 
     template<typename T>
     T *getComponentList() {
-        component::ComponentStore::getInstance()->getComponentList<T>()
+        return component::ComponentStore::getInstance()->getComponentList<T>();
     }
 
     int *getEntityList(ComponentId *componentTuple);

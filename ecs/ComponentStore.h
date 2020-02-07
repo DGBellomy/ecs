@@ -33,7 +33,7 @@ namespace ecs {
             bool addComponentList(ComponentId &componentId);
 
             template<typename T>
-            T *getComponentList(ComponentId &componentId);
+            T *getComponentList();
 
             template<typename T>
             void rmComponentList(ComponentId &componentId);
@@ -94,8 +94,8 @@ namespace ecs {
         }
 
         template<typename T>
-        T *ComponentStore::getComponentList(ComponentId &componentId) {
-            ComponentList *componentList = _getComponentList(componentId);
+        T *ComponentStore::getComponentList() {
+            ComponentList *componentList = _getComponentList(T::ID());
 
             if (!componentList)
                 return nullptr;
