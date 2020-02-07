@@ -11,7 +11,7 @@ namespace ecs {
 
         class Systems {
             bool stop_;
-            std::map<SystemRunType, std::vector<SystemFunctionPtr>> systems_;
+            std::map<SystemRunType, std::vector<SystemFunctionPtr> > systems_;
 
         public:
             static Systems *getInstance() {
@@ -30,7 +30,7 @@ namespace ecs {
             void run() {
                 _runAll(OnInit);
                 _runAll(OnStart);
-                while(!stop_) {
+                while (!stop_) {
                     _runAll(OnTick);
                     _runAll(OnLateTick);
                 }

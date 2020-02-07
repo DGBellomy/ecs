@@ -1,5 +1,5 @@
 #include <iostream>
-#include "ecs/ECS.h"
+#include "ECS.h"
 
 Component(Position,
           int x;
@@ -72,18 +72,11 @@ void createGoblin(int posX, int posY) {
     Velocity velocity = {0, 0};
 
     EntityId entityId = ecs::getNewEntityId();
-    ecs::addComponent<Position>(entityId, position);
-    ecs::addComponent<Velocity>(entityId, velocity);
+    ecs::addComponent(entityId, position);
+    ecs::addComponent(entityId, velocity);
 }
 
 int main() {
-    // TODO: create components to be assigned to an entity
-    // or.................................
-    // TODO: create new entity and assign the components
-
-    Position position = {5, 7};
-    Velocity velocity = {0, 0};
-
     createGoblin(5, 7);
     createGoblin(12, 43);
 
