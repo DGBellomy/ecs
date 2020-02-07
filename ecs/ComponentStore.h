@@ -57,7 +57,6 @@ namespace ecs {
             template<typename T>
             int size(ComponentId &componentId) const;
 
-            template<typename T>
             int active(ComponentId &componentId) const;
 
             bool isActive(ComponentId &componentId, EntityId entityID) const;
@@ -186,7 +185,6 @@ namespace ecs {
             return componentList->size();
         }
 
-        template<typename T>
         int ComponentStore::active(ComponentId &componentId) const {
             ComponentList *componentList = _getComponentList(componentId);
 

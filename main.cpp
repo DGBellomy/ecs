@@ -14,10 +14,6 @@ Component(Velocity,
 // create a system that handles a "COMPONENT"
 
 void InputSystem() {
-    // TODO: make typedef (CompId => std::string)
-    // TODO: make typedef (CompList => vector<CompId, void*>)
-    // CompType* components = ecs::getComponentList<CompType>();
-
     int x, y;
     std::cout << "Enter x: ";
     std::cin >> x;
@@ -26,22 +22,48 @@ void InputSystem() {
     std::cout << std::endl;
 
     Position *positionList = ecs::getComponentList<Position>();
+    const int activePositionComponents = ecs::numActive(Position::ID());
 
-    for (int i = 0; i < ecs::length(Position::ID()); i++) {
+    for (int i = 0; i < activePositionComponents; i++) {
         // TODO: do the stuff
+        Position position = positionList[i];
+        if (x != position.x || y != position.y) {
+            Velocity* velocity = ecs::getComponent<Velocity>(position.entityID);
+            velocity->x = x - position.x;
+            velocity->y = y - position.y;
+        }
     }
-
-    // TODO: assuming an entity holds ptrs to it's components???
-    // for (component in components) {
-    //   if (component.property > 5) {
-    //     CompType* component = ecs::getComponent<CompType>(component1.entityId, T::ID());
-    //     component->someProperty = value;
-    //   }
-    // }
 }
 
 void MoveSystem() {
-    // TODO: make move system
+    Velocity *velocityList = ecs::getComponentList<Velocity>();
+    const int activeVelocityComponents = ecs::numActive(Velocity::ID());
+
+    for (int i = 0; i < activeVelocityComponents; i++) {
+        if (velocityList[i].x != 0 || velocityList[i].y != 0) {
+            Position *position = ecs::getComponent<Position>(velocityList[i].entityID);
+            position->x += velocityList[i].x;
+            position->y += velocityList[i].y;
+        }
+    }
+}
+
+void ShowLists() {
+    Velocity *velocityList = ecs::getComponentList<Velocity>();
+    const int activeVelocityComponents = ecs::numActive(Velocity::ID());
+
+    std::puts("VELOCITY: \n");
+    for (int i = 0; i < activeVelocityComponents; i++) {
+        std::printf("velocity: { x: %d, y: %d, entityID: %d }\n", velocityList[i].x, velocityList[i].y, velocityList[i].entityID);
+    }
+
+    Position *positionList = ecs::getComponentList<Position>();
+    const int activePositionComponents = ecs::numActive(Position::ID());
+
+    std::puts("POSITION: \n");
+    for (int i = 0; i < activePositionComponents; i++) {
+        std::printf("position: { x: %d, y: %d, entityID: %d }\n", positionList[i].x, positionList[i].y, positionList[i].entityID);
+    }
 }
 
 int main() {
@@ -69,6 +91,7 @@ int main() {
     // TODO: priority will default to 5 - [0:9]???
     ecs::registerSystem(InputSystem);
     ecs::registerSystem(MoveSystem);
+    ecs::registerSystem(ShowLists);
 
     ecs::run();
 

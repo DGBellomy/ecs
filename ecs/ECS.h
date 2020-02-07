@@ -41,11 +41,17 @@ namespace ecs {
         // TODO: run the systems in order of priority
     }
 
+    size_t numActive(const ComponentId &componentId) {
+        return component::ComponentStore::getInstance()->active(componentId);
+    }
+
     template<typename T>
     void rmComponent(ComponentId &name);
 
     template<typename T>
-    T *getComponent(EntityId entityID, ComponentId &name);
+    T *getComponent(EntityId entityID) {
+        return reinterpret_cast<T*>(entity::EntityStore::getInstance()->getComponent(entityID, T::ID()));
+    }
 
     template<typename T>
     void activateComponent(EntityId entityID, ComponentId &name);
@@ -60,7 +66,7 @@ namespace ecs {
 
     template<typename T>
     T *getComponentList() {
-        component::ComponentStore::getInstance()->getComponentList()
+        component::ComponentStore::getInstance()->getComponentList<T>()
     }
 
     int *getEntityList(ComponentId *componentTuple);
