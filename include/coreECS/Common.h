@@ -1,6 +1,6 @@
 //
 // Created by Garrett Bellomy on 2/5/2020.
-// Description: Holds common defines and typedefs needed throughout the ECS headers and possibly by end-user.
+// Description: Holds common defines and typedefs needed throughout the coreECS headers and possibly by end-user.
 //
 
 #ifndef ECS_EXAMPLES_COMMON_H

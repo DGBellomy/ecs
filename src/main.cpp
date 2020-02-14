@@ -1,5 +1,5 @@
 #include <iostream>
-#include "ecs/ECS.h"
+#include <ecs>
 
 Component(Position,
           int x;
@@ -84,7 +84,7 @@ int main() {
     ecs::registerSystem(MoveSystem, OnInit);
     ecs::registerSystem(ShowLists, OnStart);
 
-    std::puts("Starting ECS Systems");
+    std::puts("Starting coreECS Systems");
     ecs::run();
 
     return 0;
