@@ -4,10 +4,10 @@
 
 #pragma once
 
-#include "Common.h"
-#include "EntityStore.h"
-#include "ComponentStore.h"
-#include "Systems.h"
+#include "ecs/Common.h"
+#include "ecs/EntityStore.h"
+#include "ecs/ComponentStore.h"
+#include "ecs/Systems.h"
 
 namespace ecs {
 

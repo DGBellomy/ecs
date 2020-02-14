@@ -1,5 +1,5 @@
 #include <iostream>
-#include "ECS.h"
+#include "ecs/ECS.h"
 
 Component(Position,
           int x;
