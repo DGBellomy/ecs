@@ -17,6 +17,11 @@
         EntityId entityID;\
     }
 
+// TODO:
+//Component(Position) {
+//
+//}
+
 typedef int EntityId;
 typedef const std::string ComponentId;
 
