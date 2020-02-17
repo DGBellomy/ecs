@@ -10,17 +10,14 @@
 #include <map>
 #include <vector>
 
-#define Component(comp, data) \
+#define Component(comp, compData) \
     struct comp {\
         static std::string ID() { return #comp; };\
-        data\
         EntityId entityID;\
-    }
-
-// TODO:
-//Component(Position) {
-//
-//}
+        struct \
+            compData data;\
+        \
+    };
 
 typedef int EntityId;
 typedef const std::string ComponentId;
