@@ -1,5 +1,5 @@
 #include <iostream>
-#include "ecslib/ECS.cpp"
+#include "ecs/ECS.h"
 
 Component(Position, {
     int x;
@@ -21,7 +21,7 @@ void InputSystem() {
 
     forEachComponent(position, Position, {
         if (x != position->data.x || y != position->data.y) {
-            Velocity *velocity = ecs::getComponent<Velocity>(position->entityID);
+            Velocity *velocity = ecs::Components::get<Velocity>(position->entityID);
             velocity->data.x = x - position->data.x;
             velocity->data.y = y - position->data.y;
         }
@@ -31,7 +31,7 @@ void InputSystem() {
 void MoveSystem() {
     forEachComponent(velocity, Velocity, {
         if (velocity->data.x != 0 || velocity->data.y != 0) {
-            Position *position = ecs::getComponent<Position>(velocity->entityID);
+            Position *position = ecs::Components::get<Position>(velocity->entityID);
             position->data.x += velocity->data.x;
             position->data.y += velocity->data.y;
         }
@@ -51,28 +51,28 @@ void ShowLists() {
                     position->entityID);
     })
 
-    ecs::stop();
+    ecs::Systems::stop();
 }
 
 void createGoblin(int posX, int posY) {
     Position position = {posX, posY};
     Velocity velocity = {0, 0};
 
-    EntityId entityId = ecs::getNewEntityId();
-    ecs::addComponent(entityId, position);
-    ecs::addComponent(entityId, velocity);
+    ecs::Entity entity("Goblin");
+    entity.addComponent(position);
+    entity.addComponent(velocity);
 }
 
 int main() {
     createGoblin(5, 7);
     createGoblin(12, 43);
 
-    ecs::registerSystem(InputSystem, OnInit);
-    ecs::registerSystem(MoveSystem, OnInit);
-    ecs::registerSystem(ShowLists, OnStart);
+    ecs::Systems::onInit(InputSystem);
+    ecs::Systems::onInit(MoveSystem);
+    ecs::Systems::onStart(ShowLists);
 
-    std::puts("Starting coreECS Systems");
-    ecs::run();
+    std::puts("Starting ecs Systems");
+    ecs::Systems::run();
 
     return 0;
 }

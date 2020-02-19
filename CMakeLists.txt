@@ -3,13 +3,11 @@ project(ecs_examples)
 
 set(CMAKE_CXX_STANDARD 98)
 
-include_directories(include)
-
 add_executable(ecs_examples
-        include/ecs
-        include/coreECS/Common.h
-        include/coreECS/ComponentList.h
-        include/coreECS/ComponentStore.h
-        include/coreECS/EntityStore.h
-        include/coreECS/Systems.h
-        src/main.cpp)
+        ecs/ECS.h
+        ecs/Common.h
+        ecs/ComponentList.h
+        ecs/ComponentStore.h
+        ecs/EntityStore.h
+        ecs/Systems.h
+        test_main.cpp)
