@@ -1,15 +1,6 @@
 #include <iostream>
 #include "ecs/ECS.h"
-
-Component(Position, {
-    int x;
-    int y;
-})
-
-Component(Velocity, {
-    int x;
-    int y;
-})
+#include "Components.h"
 
 void InputSystem() {
     int x, y;
@@ -51,6 +42,8 @@ void ShowLists() {
                     position->entityID);
     })
 
+    std::printf("Win32: { x: %d, y: %d }\n", Win32.x, Win32.y);
+
     ecs::Systems::stop();
 }
 
@@ -66,6 +59,9 @@ void createGoblin(int posX, int posY) {
 int main() {
     createGoblin(5, 7);
     createGoblin(12, 43);
+
+    Win32.x = 9;
+    Win32.y = 72;
 
     ecs::Systems::onInit(InputSystem);
     ecs::Systems::onInit(MoveSystem);

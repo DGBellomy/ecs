@@ -15,8 +15,11 @@
         EntityId entityID;\
         struct \
             compData data;\
-        \
     };
+
+#define StaticComponent(comp, data) \
+    struct static_##comp data;\
+    static static_##comp comp;
 
 #define forEachComponent(component, ComponentType, process) \
 {\
