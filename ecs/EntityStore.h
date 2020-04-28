@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "Common.h"
+#include "Types.h"
 
 typedef std::map<ComponentId, void *> ComponentPtrMap;
 typedef std::map<EntityId, ComponentPtrMap> EntityMap;

@@ -15,11 +15,19 @@
         EntityId entityID;\
         struct \
             compData data;\
+        \
     };
 
 #define StaticComponent(comp, data) \
-    struct static_##comp data;\
-    static static_##comp comp;
+    struct comp data;
+
+#define StaticClass(className) \
+            public:\
+                className() = delete;\
+                className(const className &) = delete;\
+                className(const className &&) = delete;\
+                className &operator=(const className &) = delete;\
+                className &operator=(const className &&) = delete;
 
 #define forEachComponent(component, ComponentType, process) \
 {\
@@ -39,7 +47,7 @@ typedef void (*SystemFunctionPtr)();
 
 enum SystemRunType {
     OnInit,
-    OnStart,
+    OnSetup,
     OnTick,
     OnLateTick,
     OnCleanup

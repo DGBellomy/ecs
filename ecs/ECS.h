@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "Common.h"
+#include "Types.h"
 #include "EntityStore.h"
 #include "ComponentStore.h"
 #include "Systems.h"
@@ -48,17 +48,7 @@ namespace ecs {
     };
 
     class Components {
-    public:
-        Components(const Components &) = delete;
-
-        Components(const Components &&) = delete;
-
-        Components &operator=(const Components &) = delete;
-
-        Components &operator=(const Components &&) = delete;
-
-    private:
-        Components() {}
+    StaticClass(Components)
 
     public:
         static size_t active(const ComponentId &componentId) {
@@ -92,25 +82,15 @@ namespace ecs {
     };
 
     class Systems {
-    public:
-        Systems(const Systems &) = delete;
-
-        Systems(const Systems &&) = delete;
-
-        Systems &operator=(const Systems &) = delete;
-
-        Systems &operator=(const Systems &&) = delete;
-
-    private:
-        Systems() {}
+    StaticClass(Systems)
 
     public:
         static void onInit(SystemFunctionPtr callback) {
             system::Systems::getInstance()->addSystem(callback, OnInit);
         }
 
-        static void onStart(SystemFunctionPtr callback) {
-            system::Systems::getInstance()->addSystem(callback, OnStart);
+        static void onSetup(SystemFunctionPtr callback) {
+            system::Systems::getInstance()->addSystem(callback, OnSetup);
         }
 
         static void onTick(SystemFunctionPtr callback) {
@@ -129,12 +109,8 @@ namespace ecs {
         // void enableSystem(void (funcPtr)(void));
         // void disableSystem(void (funcPtr)(void));
 
-        static void run() {
-            system::Systems::getInstance()->run();
-        }
-
-        static void stop() {
-            system::Systems::getInstance()->stop();
+        static void run(SystemRunType systemRunType) {
+            system::Systems::getInstance()->run(systemRunType);
         }
     };
 

@@ -12,7 +12,7 @@
 #include <string>
 
 #include "ComponentList.h"
-#include "Common.h"
+#include "Types.h"
 
 typedef std::map<std::string, ecs::component::ComponentList> ComponentsMap;
 

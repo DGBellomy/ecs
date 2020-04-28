@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "Common.h"
+#include "Types.h"
 
 #define _DEFAULT_COMPONENT_VECTOR_SIZE 16
 

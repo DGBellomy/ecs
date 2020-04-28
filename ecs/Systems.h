@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "Common.h"
+#include "Types.h"
 
 namespace ecs {
     namespace system {
@@ -27,23 +27,7 @@ namespace ecs {
                 systems_[systemRunType].push_back(systemFunctionPtr);
             }
 
-            void run() {
-                _runAll(OnInit);
-                _runAll(OnStart);
-                while (!stop_) {
-                    _runAll(OnTick);
-                    _runAll(OnLateTick);
-                }
-                _runAll(OnCleanup);
-                stop_ = false;
-            }
-
-            void stop() {
-                stop_ = true;
-            }
-
-        private:
-            void _runAll(SystemRunType systemRunType) {
+            void run(SystemRunType systemRunType) {
                 for (size_t i = 0; i < systems_[systemRunType].size(); i++) {
                     systems_[systemRunType][i]();
                 }
