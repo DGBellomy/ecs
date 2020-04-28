@@ -1,5 +1,7 @@
 # ECS (Entity Component System)
-Creating header-only library to enable reuse of ECS system.
+A header-only library to enable reuse of ECS system.
+
+Benefits of ECS is optimized memory lookups, decoupled systems, and greater flexibility of Entity creation and modification.
 
 # interface
 ```
